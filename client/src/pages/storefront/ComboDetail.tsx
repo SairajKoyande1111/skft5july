@@ -698,7 +698,7 @@ export default function ComboDetail() {
                 {allProductRecipes.map((recipe, idx) => (
                   <div
                     key={idx}
-                    className="min-w-[240px] sm:min-w-[260px] snap-start bg-card border border-border/30 rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col"
+                    className="min-w-[260px] sm:min-w-[280px] snap-start bg-card border border-border/30 rounded-2xl overflow-hidden hover:shadow-md transition-shadow flex flex-col"
                   >
                     <div className="w-full h-44 overflow-hidden bg-muted/20 flex items-center justify-center">
                       {recipe.image ? (
@@ -711,7 +711,7 @@ export default function ComboDetail() {
                       <span className="text-[10px] font-bold uppercase tracking-widest text-primary/70">{recipe.productName}</span>
                       <h4 className="font-bold text-sm text-foreground leading-snug line-clamp-2">{recipe.title}</h4>
                       <p className="text-xs text-muted-foreground leading-relaxed line-clamp-3 flex-1">{recipe.description}</p>
-                      <div className="flex items-center justify-between mt-2">
+                      <div className="flex items-center gap-3 mt-1">
                         {recipe.totalTime && <span className="text-xs text-muted-foreground">⏱ {recipe.totalTime}</span>}
                         {recipe.difficulty && (
                           <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
@@ -757,7 +757,7 @@ export default function ComboDetail() {
             <div className="relative">
               <div ref={similarScrollRef} className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide snap-x">
                 {similarProducts.map((p) => (
-                  <div key={p.id} className="w-[150px] sm:w-[170px] shrink-0 snap-start">
+                  <div key={p.id} className="w-[172px] sm:w-[190px] shrink-0 snap-start">
                     <ProductCard product={p} />
                   </div>
                 ))}
