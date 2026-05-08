@@ -193,12 +193,24 @@ function TrackOrderModal({ order, onClose }: { order: OrderRequest; onClose: () 
                     {/* Icon column */}
                     <div className="flex flex-col items-center">
                       <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
-                        <img
-                          src={step.img}
-                          alt=""
-                          className={`w-7 h-7 object-contain transition-all ${isCurrent && step.status !== "delivered" ? "animate-pulse" : ""}`}
-                          style={{ filter: isCurrent && step.status !== "delivered" ? BRAND_ORANGE_FILTER : BRAND_BLUE_FILTER }}
-                        />
+                        {isCurrent && step.status !== "delivered" ? (
+                          <div
+                            className="w-7 h-7 animate-pulse"
+                            style={{
+                              backgroundColor: "#F97316",
+                              maskImage: `url(${step.img})`,
+                              maskSize: "contain",
+                              maskRepeat: "no-repeat",
+                              maskPosition: "center",
+                              WebkitMaskImage: `url(${step.img})`,
+                              WebkitMaskSize: "contain",
+                              WebkitMaskRepeat: "no-repeat",
+                              WebkitMaskPosition: "center",
+                            }}
+                          />
+                        ) : (
+                          <img src={step.img} alt="" className="w-7 h-7 object-contain" style={{ filter: BRAND_BLUE_FILTER }} />
+                        )}
                         {isCurrent && step.status !== "delivered" && (
                           <>
                             <span className="absolute inset-0 rounded-full ring-2 ring-orange-400/50" />
@@ -322,12 +334,24 @@ function OrderCard({ order, productImageMap }: { order: OrderRequest; productIma
                     <div className={`absolute top-5 left-1/2 w-full h-0.5 ${isDone ? "bg-primary" : "bg-slate-200"}`} />
                   )}
                   <div className="relative z-10 w-10 h-10 flex items-center justify-center">
-                    <img
-                      src={step.img}
-                      alt=""
-                      className={`w-7 h-7 object-contain transition-all ${isCurrent && step.status !== "delivered" ? "animate-pulse" : ""}`}
-                      style={{ filter: isCurrent && step.status !== "delivered" ? BRAND_ORANGE_FILTER : BRAND_BLUE_FILTER }}
-                    />
+                    {isCurrent && step.status !== "delivered" ? (
+                      <div
+                        className="w-7 h-7 animate-pulse"
+                        style={{
+                          backgroundColor: "#F97316",
+                          maskImage: `url(${step.img})`,
+                          maskSize: "contain",
+                          maskRepeat: "no-repeat",
+                          maskPosition: "center",
+                          WebkitMaskImage: `url(${step.img})`,
+                          WebkitMaskSize: "contain",
+                          WebkitMaskRepeat: "no-repeat",
+                          WebkitMaskPosition: "center",
+                        }}
+                      />
+                    ) : (
+                      <img src={step.img} alt="" className="w-7 h-7 object-contain" style={{ filter: BRAND_BLUE_FILTER }} />
+                    )}
                     {isCurrent && step.status !== "delivered" && (
                       <>
                         <span className="absolute inset-0 rounded-full ring-2 ring-orange-400/50" />
