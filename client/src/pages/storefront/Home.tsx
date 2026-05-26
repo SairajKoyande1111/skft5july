@@ -295,6 +295,14 @@ export default function Home() {
                                   <Button
                                     onClick={(e) => {
                                       e.stopPropagation();
+                                      const comboCategories = combo.includes
+                                        .slice(0, 3)
+                                        .map(inc => productMap[inc.productId]?.category ?? "Fish");
+                                      const qtysWithLimits = combo.includes
+                                        .map(inc => productMap[inc.productId]?.availableQty)
+                                        .filter((q): q is number => q != null);
+                                      const comboAvailableQty = qtysWithLimits.length > 0
+                                        ? Math.min(...qtysWithLimits) : null;
                                       addToCart({
                                         id: -Math.abs(parseInt(combo.id.slice(-6), 16) || 9999),
                                         name: combo.name, price: combo.discountedPrice,
@@ -302,6 +310,9 @@ export default function Home() {
                                         unit: combo.weight, imageUrl: null,
                                         isArchived: false, updatedAt: new Date(),
                                         limitedStockNote: null, sectionId: null, isCombo: true,
+                                        comboImages,
+                                        comboCategories,
+                                        availableQty: comboAvailableQty,
                                       } as any);
                                     }}
                                     className="rounded-full w-9 h-9 p-0 bg-primary hover:bg-[#F05B4E] text-white shadow-md flex items-center justify-center shrink-0 transition-colors"

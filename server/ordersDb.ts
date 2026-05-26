@@ -16,6 +16,7 @@ const orderCouponSchema = new mongoose.Schema(
 );
 
 const orderSchema = new mongoose.Schema({
+  orderId: { type: String, default: null },
   customerName: { type: String, required: true },
   phone: { type: String, required: true },
   deliveryArea: { type: String, required: true },

@@ -61,6 +61,7 @@ function toCustomer(doc: any): Customer {
 function toOrder(doc: any): OrderRequest {
   return {
     id: doc._id.toString(),
+    orderId: doc.orderId ?? null,
     customerName: doc.customerName,
     phone: doc.phone,
     deliveryArea: doc.deliveryArea,

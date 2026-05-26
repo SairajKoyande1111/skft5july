@@ -150,10 +150,10 @@ export async function registerRoutes(
     const effectiveStatus = allBatches.length > 0 && activeBatches.length === 0
       ? "unavailable"
       : doc.status;
-    // Total available quantity from non-expired batches
+    // Total available quantity — from non-expired batches if they exist, else fall back to doc.quantity
     const availableQty = allBatches.length > 0
       ? activeBatches.reduce((sum: number, b: any) => sum + (b.quantity ?? 0), 0)
-      : null;
+      : (doc.quantity != null ? doc.quantity : null);
     return {
       id: doc._id.toString(), name: doc.name, category: doc.category,
       subCategory: doc.subCategory ?? null, status: effectiveStatus,
@@ -389,6 +389,14 @@ export async function registerRoutes(
     try {
       const input = api.orders.create.input.parse(req.body);
 
+      // Generate sequential FTW order ID (web orders)
+      let generatedOrderId: string | null = null;
+      try {
+        const OrderModel = getOrderModel();
+        const count = await OrderModel.countDocuments();
+        generatedOrderId = `FTW-${String(count + 1).padStart(4, "0")}`;
+      } catch { /* non-fatal — will fall back to MongoDB id */ }
+
       // FIFO inventory deduction if hubDbName is provided
       if (input.hubDbName) {
         try {
@@ -479,6 +487,7 @@ export async function registerRoutes(
 
       const orderInput = {
         ...input,
+        ...(generatedOrderId && { orderId: generatedOrderId }),
         ...(resolvedCoupon && { coupon: resolvedCoupon }),
         ...(resolvedSuperHubId && { superHubId: resolvedSuperHubId }),
         ...(resolvedSubHubId && { subHubId: resolvedSubHubId }),
@@ -492,7 +501,7 @@ export async function registerRoutes(
       }, 0);
 
       await storage.pushOrderToCustomer(order.phone, {
-        orderId: order.id,
+        orderId: order.orderId ?? order.id,
         customerName: order.customerName,
         phone: order.phone,
         deliveryArea: order.deliveryArea,
@@ -510,10 +519,9 @@ export async function registerRoutes(
           .map((item: any) => `• ${item.name} x${item.quantity ?? 1} — ₹${(item.price ?? 0) * (item.quantity ?? 1)}`)
           .join("\n");
         const paymentLabel = (order as any).paymentMethod === "upi" ? "UPI (Paid)" : "Cash on Delivery";
-        const shortId = order.id.toString().slice(-6).toUpperCase();
         sendWhatsApp("fishtokri_order_confirmed", order.phone, [
           order.customerName || "Customer",
-          `FT-${shortId}`,
+          order.orderId ?? order.id,
           order.address || order.deliveryArea || "Your address",
           itemsList,
           total.toString(),

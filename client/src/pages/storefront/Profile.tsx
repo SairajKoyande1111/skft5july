@@ -109,6 +109,11 @@ function formatOrderId(mongoId: string): string {
   }
 }
 
+function getDisplayOrderId(order: { id: string; orderId?: string | null }): string {
+  if (order.orderId) return order.orderId;
+  return formatOrderId(String(order.id));
+}
+
 interface OrderItem {
   productId: string | number;
   quantity: number;
@@ -162,7 +167,7 @@ function TrackOrderModal({ order, onClose }: { order: OrderRequest; onClose: () 
                 <Navigation2 className="w-4 h-4 text-primary" />
                 <p className="text-sm font-bold text-foreground">Track Order</p>
               </div>
-              <p className="text-xs text-muted-foreground">#{formatOrderId(String(order.id))}</p>
+              <p className="text-xs text-muted-foreground">#{getDisplayOrderId(order)}</p>
               <p className="text-[11px] text-muted-foreground mt-0.5">{date}</p>
             </div>
             <button onClick={onClose} className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center text-muted-foreground hover:bg-slate-200 transition-colors shrink-0">
@@ -263,7 +268,7 @@ function TrackOrderModal({ order, onClose }: { order: OrderRequest; onClose: () 
 }
 
 function downloadInvoicePDF(order: OrderRequest, items: OrderItem[], subtotal: number, deliveryFee: number, discount: number, total: number, date: string) {
-  const orderId = formatOrderId(String(order.id));
+  const orderId = getDisplayOrderId(order);
   const paymentMethod = (order as any).paymentMethod === "upi" ? "UPI" : "Cash on Delivery";
   const isPaid = (order as any).paymentMethod === "upi";
   const couponCode = (order as any).coupon?.code ?? "";
@@ -395,7 +400,7 @@ function OrderCard({ order, productImageMap }: { order: OrderRequest; productIma
         <div className="flex items-center gap-2.5 min-w-0">
           <img src={orderIconImg} alt="" className="w-7 h-7 object-contain flex-shrink-0" style={{ filter: "brightness(0) saturate(100%) invert(28%) sepia(48%) saturate(1517%) hue-rotate(212deg) brightness(91%) contrast(89%)" }} />
           <div className="min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">Order #{formatOrderId(String(order.id))}</p>
+            <p className="text-sm font-medium text-foreground truncate">Order #{getDisplayOrderId(order)}</p>
             <p className="text-xs text-muted-foreground">{date}</p>
           </div>
         </div>
@@ -515,7 +520,7 @@ function OrderCard({ order, productImageMap }: { order: OrderRequest; productIma
                 <p className="text-[11px] text-muted-foreground">FishTokri · Mumbai</p>
               </div>
               <div className="text-right">
-                <p className="text-xs font-semibold text-foreground">#{formatOrderId(String(order.id))}</p>
+                <p className="text-xs font-semibold text-foreground">#{getDisplayOrderId(order)}</p>
                 <p className="text-[11px] text-muted-foreground">{date}</p>
               </div>
             </div>
@@ -629,7 +634,7 @@ function OrderGridCard({ order, productImageMap }: { order: OrderRequest; produc
       </div>
 
       <div className="px-3 pb-2 flex-1 space-y-1">
-        <p className="text-[11px] font-bold text-foreground truncate">#{formatOrderId(String(order.id))}</p>
+        <p className="text-[11px] font-bold text-foreground truncate">#{getDisplayOrderId(order)}</p>
         <p className="text-[10px] text-muted-foreground">{date} · {time}</p>
         <div className="pt-1 space-y-1.5">
           {items.slice(0, 2).map((item, i) => {
@@ -1237,17 +1242,6 @@ export default function Profile() {
                         data-testid="input-address-custom-label"
                       />
                     )}
-                  </div>
-                  <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">Delivery Instructions</Label>
-                    <input
-                      type="text"
-                      value={addressForm.instructions}
-                      onChange={e => setAddressForm(f => ({ ...f, instructions: e.target.value }))}
-                      placeholder="Leave at door, ring bell twice, etc."
-                      className="w-full bg-transparent border-0 border-b border-border/60 focus:border-[#364F9F] focus:outline-none px-0 py-1.5 text-sm transition-colors"
-                      data-testid="input-address-instructions"
-                    />
                   </div>
                   <div className="flex gap-2 pt-3">
                     <Button

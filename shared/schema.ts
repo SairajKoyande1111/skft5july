@@ -135,6 +135,7 @@ export type OrderCoupon = {
 
 export type OrderRequest = {
   id: string;
+  orderId?: string | null;
   customerName: string;
   phone: string;
   deliveryArea: string;
@@ -154,6 +155,7 @@ export type OrderRequest = {
 };
 
 export type InsertOrderRequest = {
+  orderId?: string | null;
   customerName: string;
   phone: string;
   deliveryArea: string;

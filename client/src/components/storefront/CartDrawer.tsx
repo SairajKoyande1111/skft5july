@@ -153,6 +153,8 @@ export function CartDrawer() {
 
   const isCouponExhausted = (c: Coupon) => !!customer && !!(userCouponUsage[c.code]?.isExhausted);
   const isCouponApplicable = (c: Coupon) => c.isActive && c.minOrderAmount <= totalPrice && !isCouponExhausted(c);
+  // Hide exhausted coupons entirely from the list
+  const visibleCartCoupons = cartCoupons.filter(c => !isCouponExhausted(c));
 
   const validateCouponViaApi = async (code: string): Promise<{ valid: boolean; message: string }> => {
     const res = await fetch("/api/coupon/apply", {
@@ -183,7 +185,9 @@ export function CartDrawer() {
         setAppliedCoupon(coupon);
         setCouponInput("");
       } else {
-        setCouponError(result.message || "Coupon could not be applied");
+        const msg = result.message || "";
+        const isUsageMsg = msg.toLowerCase().includes("usage limit") || msg.toLowerCase().includes("reached its");
+        setCouponError(isUsageMsg ? "Invalid coupon code" : msg || "Coupon could not be applied");
       }
     } catch {
       setCouponError("Failed to validate coupon. Please try again.");
@@ -733,7 +737,7 @@ export function CartDrawer() {
 
                             {/* Coupon list */}
                             <div className="divide-y divide-border/20 border-t border-border/20">
-                              {(showAllCoupons ? cartCoupons : cartCoupons.slice(0, 3)).map(coupon => {
+                              {(showAllCoupons ? visibleCartCoupons : visibleCartCoupons.slice(0, 3)).map(coupon => {
                                 const exhausted = isCouponExhausted(coupon);
                                 const applicable = isCouponApplicable(coupon);
                                 const isApplied = appliedCoupon?.id === coupon.id;
@@ -811,12 +815,12 @@ export function CartDrawer() {
                                   </div>
                                 );
                               })}
-                              {cartCoupons.length > 3 && (
+                              {visibleCartCoupons.length > 3 && (
                                 <button
                                   onClick={() => setShowAllCoupons(s => !s)}
                                   className="w-full py-2.5 text-xs text-primary font-semibold flex items-center justify-center gap-1 hover:bg-muted/10"
                                 >
-                                  {showAllCoupons ? <><ChevronUp className="w-3 h-3" /> Show less</> : <><ChevronDown className="w-3 h-3" /> +{cartCoupons.length - 3} more coupons</>}
+                                  {showAllCoupons ? <><ChevronUp className="w-3 h-3" /> Show less</> : <><ChevronDown className="w-3 h-3" /> +{visibleCartCoupons.length - 3} more coupons</>}
                                 </button>
                               )}
                             </div>
@@ -1491,16 +1495,6 @@ export function CartDrawer() {
               </div>
             </div>
 
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Delivery Instructions</Label>
-              <Textarea
-                value={addForm.instructions}
-                onChange={e => setAddForm(f => ({ ...f, instructions: e.target.value }))}
-                placeholder="e.g. Ring bell twice, leave at door"
-                className="rounded-xl border-border/60 resize-none min-h-[70px]"
-                maxLength={100}
-              />
-            </div>
           </div>
 
           <div className="px-6 py-5 border-t border-border/30 flex gap-3 shrink-0">

@@ -54,6 +54,7 @@ export default function Orders() {
                   <TableCell>
                     <div className="font-medium">{order.customerName}</div>
                     <div className="text-xs text-muted-foreground">{order.phone}</div>
+                    {order.orderId && <div className="text-xs font-mono text-primary mt-0.5">{order.orderId}</div>}
                   </TableCell>
                   <TableCell>
                     <div className="font-medium">{order.deliveryArea}</div>
