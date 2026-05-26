@@ -109,7 +109,7 @@ export async function generateOrderId(): Promise<string> {
   const dateStr = istDate.toISOString().slice(0, 10).replace(/-/g, ""); // "YYYYMMDD"
   const OrderModel = getOrderModel();
   const count = await OrderModel.countDocuments({
-    orderId: { $regex: `^#FTS${dateStr}` },
+    orderId: { $regex: `^#FTW${dateStr}` },
   });
-  return `#FTS${dateStr}${count + 1}`;
+  return `#FTW${dateStr}${count + 1}`;
 }

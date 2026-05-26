@@ -594,7 +594,7 @@ export async function registerRoutes(
       // orderId and inventoryDeducted are set together in one update AFTER save,
       // so both appear after createdAt/updatedAt — matching admin POS field order exactly.
       await getOrderModel().findByIdAndUpdate(order.id, {
-        $set: { orderId: generatedOrderId, inventoryDeducted: !!input.hubDbName },
+        $set: { orderId: generatedOrderId, inventoryDeducted: false },
       });
 
       const orderItemsTotal = (order.items as any[]).reduce((sum: number, item: any) => {
