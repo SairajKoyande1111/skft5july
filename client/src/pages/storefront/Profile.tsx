@@ -30,6 +30,7 @@ import trackConfirmedImg from "@/assets/track-confirmed.png";
 import trackDeliveryImg from "@/assets/track-delivery.png";
 import trackDeliveredImg from "@/assets/track-delivered.png";
 import invoiceImg from "@/assets/invoice.png";
+import pdfIconImg from "@assets/pdf_(1)_1779891354459.png";
 import iconBriefcaseImg from "@assets/briefcase_1776927648499.png";
 import headerUserImg from "@assets/user_(1)_1774707188827.png";
 import headerCartImg from "@assets/shopping-bag_1774706595493.png";
@@ -268,18 +269,30 @@ function TrackOrderModal({ order, onClose }: { order: OrderRequest; onClose: () 
   );
 }
 
+const FISHTOKRI_LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 325 815 160" style="height:38px;display:block;"><path fill="#f05c4e" d="M 77.949219 472.652344 L 100.703125 459.390625 L 123.460938 472.652344 L 123.460938 485.417969 L 100.703125 472.300781 L 77.949219 485.417969 Z M 58.382812 412.21875 C 59.042969 411.980469 68.5 405.875 68.964844 405.382812 C 68.011719 404.605469 67.03125 397.320312 66.9375 395.542969 C 66.742188 391.933594 67.273438 388.175781 68.140625 384.996094 C 69.695312 379.308594 72.789062 374.097656 76.890625 370 L 97.691406 349.195312 C 98.363281 348.527344 100.054688 346.667969 100.703125 346.28125 C 101.363281 346.671875 103.101562 348.585938 103.78125 349.265625 L 112.707031 358.1875 C 116.722656 362.203125 120.632812 366.121094 124.652344 370.132812 C 125.226562 370.707031 125.574219 371.199219 126.125 371.746094 C 129.253906 374.847656 132.152344 380.945312 133.355469 385.308594 C 134.914062 390.960938 134.875 397.859375 133.140625 403.570312 C 132.984375 404.085938 132.753906 405.382812 132.296875 405.65625 C 132.636719 406.074219 136.664062 408.570312 137.5 409.085938 C 138.421875 409.65625 139.296875 410.214844 140.199219 410.820312 C 140.785156 411.214844 142.351562 412.296875 142.9375 412.519531 C 143.121094 411.664062 143.765625 410.316406 144.085938 409.421875 C 145.226562 406.238281 146.03125 402.632812 146.40625 399.242188 C 147.582031 388.546875 145.136719 378.179688 139.558594 369.3125 C 138.328125 367.347656 136.617188 365.171875 135.128906 363.410156 C 134.84375 363.070312 134.390625 362.636719 134.074219 362.320312 C 128.492188 356.742188 123.011719 351.261719 117.429688 345.679688 C 114.625 342.875 111.914062 340.164062 109.109375 337.359375 L 100.703125 329.011719 C 100.125 329.421875 99.242188 330.417969 98.671875 330.984375 L 67.46875 362.1875 C 65.515625 364.132812 63.445312 366.863281 61.953125 369.148438 C 55.070312 379.699219 52.921875 393.679688 56.277344 406.03125 C 56.90625 408.34375 57.660156 410.128906 58.382812 412.21875 Z M 93.207031 373.460938 C 93.207031 378.058594 96.773438 381.488281 100.328125 381.488281 L 101.402344 381.488281 C 105.335938 381.488281 108.636719 377.773438 108.703125 373.867188 C 108.769531 369.882812 105.386719 366.058594 101.535156 366.058594 L 100.328125 366.058594 C 96.632812 366.058594 93.207031 369.789062 93.207031 373.460938 Z M 93.207031 373.460938 " fillRule="evenodd"/><path fill="#354f9f" d="M 17.777344 435.4375 L 32.675781 425.921875 L 55.410156 440.351562 L 77.941406 426.015625 L 100.707031 440.160156 L 123.257812 426.03125 L 145.515625 440.351562 L 168.253906 425.921875 L 183.535156 435.640625 L 179.207031 447.265625 L 168.25 439.992188 L 145.6875 454.390625 L 123.265625 440.042969 L 100.707031 454.394531 L 77.945312 440 L 54.984375 454.398438 L 32.65625 440 L 22.175781 447.015625 Z M 8.15625 410.320312 L 32.675781 394.65625 L 55.410156 409.089844 L 77.941406 394.75 L 100.707031 408.898438 L 123.257812 394.765625 L 145.515625 409.089844 L 168.253906 394.65625 L 193.257812 410.5625 L 188.816406 421.921875 L 168.25 408.714844 L 145.6875 423.125 L 123.265625 408.78125 L 100.707031 423.132812 L 77.945312 408.738281 L 54.984375 423.136719 L 32.65625 408.738281 L 12.523438 421.726562 Z M 8.15625 410.320312 " fillRule="evenodd"/><path fill="#354f9f" d="M 248.613281 383.648438 L 248.613281 378.21875 L 233.539062 378.21875 L 233.539062 372.089844 C 234.066406 367.539062 237.042969 365.261719 242.476562 365.261719 L 248.613281 365.261719 L 248.613281 346.003906 C 245.105469 345.476562 241.425781 345.300781 237.394531 345.300781 C 220.042969 345.300781 209.703125 352.304688 210.578125 369.988281 L 210.578125 465.066406 L 233.890625 465.066406 L 233.890625 395.378906 L 237.042969 395.378906 C 243.355469 395.378906 248.613281 389.949219 248.613281 383.648438 Z M 260.179688 346.003906 L 260.179688 364.210938 L 283.492188 364.210938 L 283.492188 357.382812 C 283.667969 349.855469 279.984375 346.003906 272.273438 346.003906 Z M 260.179688 372.441406 L 260.179688 465.066406 L 283.492188 465.066406 L 283.492188 383.648438 C 283.492188 376.117188 279.808594 372.441406 272.273438 372.441406 Z M 317.84375 434.597656 L 294.007812 434.597656 C 294.007812 445.277344 297.511719 453.332031 304.523438 458.585938 C 310.832031 464.015625 320.648438 466.816406 333.617188 466.816406 C 358.15625 466.816406 376.03125 458.410156 376.03125 435.648438 C 376.03125 429.347656 373.929688 423.742188 369.546875 419.191406 C 364.464844 414.464844 354.125 410.4375 338.351562 407.285156 C 326.257812 405.007812 320.296875 401.332031 320.296875 396.605469 C 320.296875 391.875 324.855469 389.425781 333.96875 389.425781 C 341.679688 389.425781 346.414062 391.703125 347.988281 395.726562 C 349.390625 399.40625 352.898438 401.332031 358.332031 401.507812 L 373.054688 401.507812 C 372.527344 391.875 368.847656 384.347656 362.011719 378.921875 C 355 373.667969 345.535156 371.039062 333.617188 371.039062 C 312.410156 371.390625 296.636719 380.84375 296.636719 400.804688 C 296.8125 415.339844 307.328125 424.445312 327.832031 428.121094 C 343.785156 430.921875 351.84375 434.773438 351.84375 439.5 C 351.84375 445.453125 346.9375 448.257812 337.121094 448.257812 C 325.730469 448.257812 318.371094 444.753906 317.84375 434.597656 Z M 448.59375 417.617188 L 448.59375 465.066406 L 471.730469 465.066406 L 471.730469 411.3125 C 472.429688 391.175781 466.296875 378.746094 453.328125 374.019531 C 435.976562 367.890625 421.429688 371.742188 409.507812 385.398438 L 409.507812 357.734375 C 409.507812 350.03125 405.652344 346.003906 397.941406 346.003906 L 386.199219 346.003906 L 386.199219 465.066406 L 409.507812 465.066406 L 409.507812 417.617188 C 409.507812 403.433594 415.46875 391.875 429.316406 391.875 C 442.636719 391.875 448.59375 402.03125 448.59375 417.617188 Z M 520.980469 377.519531 L 520.980469 372.441406 L 506.960938 372.441406 L 506.960938 357.734375 C 506.960938 351.605469 501.875 346.003906 495.742188 346.003906 L 483.648438 346.003906 L 483.648438 447.203125 C 483.472656 457.535156 487.679688 462.964844 496.441406 463.839844 C 505.207031 464.714844 513.445312 464.714844 520.980469 464.015625 L 520.980469 446.328125 L 513.792969 446.328125 C 509.238281 446.328125 506.960938 444.230469 506.960938 440.375 L 506.960938 389.074219 L 509.414062 389.074219 C 515.898438 389.074219 520.980469 384.171875 520.980469 377.519531 Z M 572.160156 371.039062 C 544.117188 371.039062 530.09375 386.972656 530.09375 419.191406 C 530.09375 451.058594 544.117188 467.164062 572.160156 467.164062 C 600.203125 467.164062 614.398438 451.058594 614.398438 419.191406 C 614.398438 386.972656 600.203125 371.039062 572.160156 371.039062 Z M 572.160156 391.527344 C 584.078125 391.527344 590.035156 400.457031 590.035156 418.492188 C 589.863281 436.875 583.902344 446.328125 571.984375 446.328125 C 560.066406 446.328125 553.929688 437.226562 553.757812 419.191406 C 553.757812 400.804688 559.890625 391.527344 572.160156 391.527344 Z M 637.710938 346.003906 L 625.617188 346.003906 L 625.617188 465.066406 L 648.925781 465.066406 L 648.925781 431.273438 C 648.925781 428.820312 650.152344 427.246094 652.609375 426.71875 C 655.585938 426.71875 658.566406 429.347656 661.546875 434.597656 L 678.023438 465.066406 L 706.066406 465.066406 L 673.640625 410.085938 L 705.714844 375.769531 L 677.671875 375.769531 L 648.925781 408.6875 L 648.925781 357.382812 C 648.925781 351.253906 643.84375 346.003906 637.710938 346.003906 Z M 711.148438 465.066406 L 734.808594 465.066406 L 734.808594 416.914062 C 734.808594 403.433594 741.292969 396.605469 754.265625 396.605469 L 762.152344 396.605469 L 762.152344 372.441406 L 758.820312 372.441406 C 727.800781 372.441406 711.847656 387.324219 711.148438 417.265625 Z M 776.523438 346.003906 L 776.523438 364.210938 L 799.835938 364.210938 L 799.835938 357.382812 C 800.011719 349.855469 796.328125 346.003906 788.617188 346.003906 Z M 776.523438 372.441406 L 776.523438 465.066406 L 799.835938 465.066406 L 799.835938 383.648438 C 799.835938 376.117188 796.152344 372.441406 788.617188 372.441406 Z M 776.523438 372.441406 " fillRule="nonzero"/></svg>`;
+
 function downloadInvoicePDF(order: OrderRequest, items: OrderItem[], subtotal: number, deliveryFee: number, discount: number, total: number, date: string) {
   const orderId = getDisplayOrderId(order);
-  const paymentMethod = (order as any).paymentMethod === "upi" ? "UPI" : "Cash on Delivery";
-  const isPaid = (order as any).paymentMethod === "upi";
+  const paymentStatusVal = (order as any).paymentStatus ?? "unpaid";
+  const isPaid = paymentStatusVal === "paid";
+  const isPartial = paymentStatusVal === "partial";
   const couponCode = (order as any).coupon?.code ?? "";
+
+  const payments: Array<{ mode: string; amount: number }> = (order as any).payments ?? [];
+  const walletPaid = payments.filter(p => p.mode === "wallet").reduce((s, p) => s + (p.amount ?? 0), 0);
+
+  const modes = payments.length > 0 ? [...new Set(payments.map(p => p.mode))] : [(order as any).paymentMethod ?? "cash"];
+  const paymentMethod = (modes as string[]).map(m => m === "wallet" ? "Wallet Balance" : m === "upi" ? "UPI" : "Cash on Delivery").join(" + ");
+
+  const statusLabel = isPaid ? "Paid" : isPartial ? "Partial" : "Unpaid";
+  const statusColor = isPaid ? "#22c55e" : isPartial ? "#f59e0b" : "#ef4444";
 
   const itemRows = items.map(item => `
     <tr>
-      <td style="padding:8px 4px;border-bottom:1px solid #f1f5f9;font-size:13px;">${item.name}</td>
-      <td style="padding:8px 4px;border-bottom:1px solid #f1f5f9;font-size:13px;text-align:center;">${item.quantity}</td>
-      <td style="padding:8px 4px;border-bottom:1px solid #f1f5f9;font-size:13px;text-align:right;">₹${item.price.toLocaleString()}</td>
-      <td style="padding:8px 4px;border-bottom:1px solid #f1f5f9;font-size:13px;text-align:right;font-weight:600;">₹${(item.price * item.quantity).toLocaleString()}</td>
+      <td style="padding:10px 6px;border-bottom:1px solid #f1f5f9;font-size:13px;color:#1e293b;">${item.name}</td>
+      <td style="padding:10px 6px;border-bottom:1px solid #f1f5f9;font-size:13px;text-align:center;color:#64748b;">${item.quantity}</td>
+      <td style="padding:10px 6px;border-bottom:1px solid #f1f5f9;font-size:13px;text-align:right;color:#64748b;">₹${item.price.toLocaleString()}</td>
+      <td style="padding:10px 6px;border-bottom:1px solid #f1f5f9;font-size:13px;text-align:right;font-weight:700;color:#1e293b;">₹${(item.price * item.quantity).toLocaleString()}</td>
     </tr>`).join("");
 
   const html = `<!DOCTYPE html>
@@ -288,60 +301,63 @@ function downloadInvoicePDF(order: OrderRequest, items: OrderItem[], subtotal: n
   <meta charset="UTF-8"/>
   <title>Invoice ${orderId}</title>
   <style>
+    @page { margin: 0; size: A4; }
     * { margin:0; padding:0; box-sizing:border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; color:#1e293b; background:#fff; padding:32px; }
-    .header { display:flex; align-items:center; justify-content:space-between; padding-bottom:20px; border-bottom:2px solid #364F9F; margin-bottom:20px; }
-    .brand { display:flex; align-items:center; gap:10px; }
-    .brand-name { font-size:22px; font-weight:800; color:#364F9F; }
-    .brand-sub { font-size:11px; color:#64748b; margin-top:2px; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif; color:#1e293b; background:#fff; }
+    .page { padding: 36px 40px; min-height: 100vh; }
+    .header { display:flex; align-items:center; justify-content:space-between; padding-bottom:18px; border-bottom:2.5px solid #364F9F; margin-bottom:22px; }
+    .brand-sub { font-size:11px; color:#64748b; margin-top:4px; }
     .invoice-meta { text-align:right; }
-    .invoice-meta .label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#64748b; }
-    .invoice-meta .id { font-size:14px; font-weight:700; color:#1e293b; }
-    .invoice-meta .date { font-size:11px; color:#64748b; margin-top:2px; }
-    .bill-to { background:#f8fafc; border-radius:10px; padding:14px 16px; margin-bottom:20px; }
-    .bill-to .section-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#94a3b8; margin-bottom:6px; }
-    .bill-to .name { font-size:15px; font-weight:700; }
-    .bill-to .details { font-size:12px; color:#64748b; margin-top:2px; line-height:1.5; }
-    table { width:100%; border-collapse:collapse; margin-bottom:16px; }
-    thead tr th { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:#94a3b8; padding:6px 4px; border-bottom:2px solid #e2e8f0; text-align:left; }
+    .invoice-meta .tax-label { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#94a3b8; margin-bottom:4px; }
+    .invoice-meta .id { font-size:15px; font-weight:800; color:#364F9F; }
+    .invoice-meta .date { font-size:11px; color:#64748b; margin-top:3px; }
+    .bill-box { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:16px 18px; margin-bottom:22px; }
+    .bill-label { font-size:9px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:#94a3b8; margin-bottom:8px; }
+    .bill-name { font-size:15px; font-weight:800; color:#1e293b; margin-bottom:3px; }
+    .bill-detail { font-size:12px; color:#64748b; line-height:1.6; }
+    table { width:100%; border-collapse:collapse; margin-bottom:0; }
+    thead tr { background:#f8fafc; }
+    thead tr th { font-size:9px; font-weight:800; letter-spacing:1.2px; text-transform:uppercase; color:#94a3b8; padding:10px 6px; border-top:1px solid #e2e8f0; border-bottom:1px solid #e2e8f0; text-align:left; }
     thead tr th:not(:first-child) { text-align:center; }
-    thead tr th:last-child { text-align:right; }
-    thead tr th:nth-child(3) { text-align:right; }
-    .totals { margin-bottom:16px; }
-    .totals .row { display:flex; justify-content:space-between; font-size:13px; padding:4px 0; color:#64748b; }
-    .totals .row.total { font-size:15px; font-weight:800; color:#1e293b; border-top:2px solid #e2e8f0; padding-top:10px; margin-top:6px; }
-    .totals .row.discount { color:#16a34a; }
-    .totals .row.free { color:#16a34a; }
-    .payment-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-top:1px solid #f1f5f9; font-size:13px; }
-    .badge { font-size:11px; font-weight:700; padding:2px 10px; border-radius:99px; }
-    .badge.paid { background:#22c55e; color:#fff; }
-    .badge.unpaid { background:#ef4444; color:#fff; }
-    .notes { background:#364F9F; border-radius:8px; padding:10px 14px; margin-bottom:14px; }
-    .notes .notes-label { font-size:10px; font-weight:700; color:rgba(255,255,255,0.7); margin-bottom:3px; }
-    .notes .notes-text { font-size:12px; color:#fff; }
-    .footer { text-align:center; font-size:11px; color:#94a3b8; padding-top:16px; border-top:1px solid #f1f5f9; }
-    @media print { body { padding:16px; } }
+    thead tr th:last-child, thead tr th:nth-child(3) { text-align:right; }
+    .totals { margin-top:16px; border-top:1px solid #e2e8f0; padding-top:12px; }
+    .t-row { display:flex; justify-content:space-between; font-size:13px; padding:4px 0; color:#64748b; }
+    .t-row.discount { color:#16a34a; font-weight:600; }
+    .t-row.wallet { color:#364F9F; font-weight:600; }
+    .t-row.free { color:#16a34a; }
+    .t-row.grand-total { font-size:15px; font-weight:800; color:#1e293b; border-top:2px solid #334155; padding-top:12px; margin-top:8px; }
+    .divider { border:none; border-top:1px solid #e2e8f0; margin:16px 0; }
+    .info-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid #f8fafc; font-size:13px; }
+    .info-label { color:#64748b; }
+    .info-val { font-weight:600; color:#1e293b; text-align:right; }
+    .badge { font-size:11px; font-weight:800; padding:3px 12px; border-radius:99px; color:#fff; display:inline-block; }
+    .notes-box { background:#364F9F; border-radius:8px; padding:12px 16px; margin-top:16px; }
+    .notes-label { font-size:9px; font-weight:800; color:rgba(255,255,255,0.65); letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+    .notes-text { font-size:12px; color:#fff; }
+    .footer { margin-top:28px; padding-top:16px; border-top:1px solid #e2e8f0; text-align:center; }
+    .footer-thank { font-size:13px; font-weight:700; color:#364F9F; margin-bottom:3px; }
+    .footer-sub { font-size:10px; color:#94a3b8; }
+    @media print { .page { padding: 28px 36px; } }
   </style>
 </head>
 <body>
+<div class="page">
   <div class="header">
-    <div class="brand">
-      <div>
-        <div class="brand-name">🐟 FishTokri</div>
-        <div class="brand-sub">Fresh Seafood & Meat · Mumbai</div>
-      </div>
+    <div>
+      ${FISHTOKRI_LOGO_SVG}
+      <div class="brand-sub">Fresh Seafood &amp; Meat &middot; Mumbai</div>
     </div>
     <div class="invoice-meta">
-      <div class="label">Tax Invoice</div>
+      <div class="tax-label">Tax Invoice</div>
       <div class="id">#${orderId}</div>
       <div class="date">${date}</div>
     </div>
   </div>
 
-  <div class="bill-to">
-    <div class="section-label">Bill To</div>
-    <div class="name">${order.customerName}</div>
-    <div class="details">${order.phone}<br/>${order.address}, ${order.deliveryArea}</div>
+  <div class="bill-box">
+    <div class="bill-label">Bill To</div>
+    <div class="bill-name">${order.customerName}</div>
+    <div class="bill-detail">${order.phone}<br/>${order.address}, ${order.deliveryArea}</div>
   </div>
 
   <table>
@@ -357,19 +373,26 @@ function downloadInvoicePDF(order: OrderRequest, items: OrderItem[], subtotal: n
   </table>
 
   <div class="totals">
-    <div class="row"><span>Subtotal</span><span>₹${subtotal.toLocaleString()}</span></div>
-    <div class="row ${deliveryFee === 0 ? 'free' : ''}"><span>Delivery Fee</span><span>${deliveryFee === 0 ? 'FREE' : '₹' + deliveryFee}</span></div>
-    ${discount > 0 ? `<div class="row discount"><span>Coupon Discount${couponCode ? ` (${couponCode})` : ''}</span><span>-₹${discount.toLocaleString()}</span></div>` : ''}
-    <div class="row total"><span>Total</span><span>₹${total.toLocaleString()}</span></div>
+    <div class="t-row"><span>Subtotal</span><span>₹${subtotal.toLocaleString()}</span></div>
+    <div class="t-row ${deliveryFee === 0 ? 'free' : ''}"><span>Delivery Fee</span><span>${deliveryFee === 0 ? 'FREE' : '₹' + deliveryFee.toLocaleString()}</span></div>
+    ${discount > 0 ? `<div class="t-row discount"><span>Coupon Discount${couponCode ? ` (${couponCode})` : ''}</span><span>−₹${discount.toLocaleString()}</span></div>` : ''}
+    ${walletPaid > 0 ? `<div class="t-row wallet"><span>Wallet Balance Used</span><span>−₹${walletPaid.toLocaleString()}</span></div>` : ''}
+    <div class="t-row grand-total"><span>Total</span><span>₹${total.toLocaleString()}</span></div>
   </div>
 
-  ${order.timeslotLabel ? `<div class="payment-row"><span style="color:#64748b;">Delivery Slot</span><span style="font-weight:600;">${order.timeslotLabel}</span></div>` : ''}
-  <div class="payment-row"><span style="color:#64748b;">Payment Method</span><span style="font-weight:600;">${paymentMethod}</span></div>
-  <div class="payment-row"><span style="color:#64748b;">Payment Status</span><span class="badge ${isPaid ? 'paid' : 'unpaid'}">${isPaid ? 'Paid' : 'Unpaid'}</span></div>
+  <hr class="divider"/>
 
-  ${order.notes ? `<div class="notes" style="margin-top:12px;"><div class="notes-label">Order Notes</div><div class="notes-text">${order.notes}</div></div>` : ''}
+  ${order.timeslotLabel ? `<div class="info-row"><span class="info-label">Delivery Slot</span><span class="info-val">${order.timeslotLabel}</span></div>` : ''}
+  <div class="info-row"><span class="info-label">Payment Method</span><span class="info-val">${paymentMethod}</span></div>
+  <div class="info-row" style="border-bottom:none;"><span class="info-label">Payment Status</span><span class="badge" style="background:${statusColor};">${statusLabel}</span></div>
 
-  <div class="footer">Thank you for shopping with FishTokri!</div>
+  ${order.notes ? `<div class="notes-box"><div class="notes-label">Order Notes</div><div class="notes-text">${order.notes}</div></div>` : ''}
+
+  <div class="footer">
+    <div class="footer-thank">Thank you for shopping with FishTokri!</div>
+    <div class="footer-sub">fishtokri.com &middot; Fresh Seafood &amp; Meat delivered to your door</div>
+  </div>
+</div>
 </body>
 </html>`;
 
@@ -558,59 +581,79 @@ function OrderCard({ order, productImageMap }: { order: OrderRequest; productIma
               </div>
             </div>
 
-            <div className="space-y-1.5 pt-1">
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Subtotal</span><span>₹{subtotal.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>Delivery Fee</span>
-                <span>{deliveryFee === 0 ? <span className="text-green-600">FREE</span> : `₹${deliveryFee}`}</span>
-              </div>
-              {discount > 0 && (
-                <div className="flex justify-between text-sm text-green-600">
-                  <span>Coupon Discount ({(order as any).coupon?.code})</span>
-                  <span>-₹{discount.toLocaleString()}</span>
-                </div>
-              )}
-              <div className="flex justify-between text-sm font-bold text-foreground pt-2 border-t border-slate-200">
-                <span>Total</span><span>₹{total.toLocaleString()}</span>
-              </div>
-              {order.timeslotLabel && (
-                <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-100">
-                  <span className="text-muted-foreground">Delivery Slot</span>
-                  <span className="font-semibold text-foreground text-right">{order.timeslotLabel}</span>
-                </div>
-              )}
-              <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-100">
-                <span className="text-muted-foreground">Payment Method</span>
-                <span className="font-semibold text-foreground">
-                  {(order as any).paymentMethod === "upi" ? "UPI" : "Cash on Delivery"}
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Payment Status</span>
-                <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full ${(order as any).paymentMethod === "upi" ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}>
-                  {(order as any).paymentMethod === "upi" ? "Paid" : "Unpaid"}
-                </span>
-              </div>
-            </div>
+            {(() => {
+              const orderPayments: Array<{ mode: string; amount: number }> = (order as any).payments ?? [];
+              const walletPaidAmt = orderPayments.filter(p => p.mode === "wallet").reduce((s, p) => s + (p.amount ?? 0), 0);
+              const paymentStatusVal = (order as any).paymentStatus ?? "unpaid";
+              const isPaidVal = paymentStatusVal === "paid";
+              const isPartialVal = paymentStatusVal === "partial";
+              const paymentModes = orderPayments.length > 0 ? [...new Set(orderPayments.map(p => p.mode))] : [(order as any).paymentMethod ?? "cash"];
+              const paymentMethodText = (paymentModes as string[]).map(m => m === "wallet" ? "Wallet Balance" : m === "upi" ? "UPI" : "Cash on Delivery").join(" + ");
+              const statusBg = isPaidVal ? "bg-green-500" : isPartialVal ? "bg-amber-500" : "bg-red-500";
+              const statusLabel = isPaidVal ? "Paid" : isPartialVal ? "Partial" : "Unpaid";
+              return (
+                <>
+                  <div className="space-y-1.5 pt-1">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Subtotal</span><span>₹{subtotal.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Delivery Fee</span>
+                      <span>{deliveryFee === 0 ? <span className="text-green-600">FREE</span> : `₹${deliveryFee}`}</span>
+                    </div>
+                    {discount > 0 && (
+                      <div className="flex justify-between text-sm text-green-600 font-medium">
+                        <span>Coupon Discount ({(order as any).coupon?.code})</span>
+                        <span>-₹{discount.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {walletPaidAmt > 0 && (
+                      <div className="flex justify-between text-sm font-medium" style={{ color: "#364F9F" }}>
+                        <span>Wallet Balance Used</span>
+                        <span>-₹{walletPaidAmt.toLocaleString()}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-sm font-bold text-foreground pt-2 border-t border-slate-200">
+                      <span>Total</span><span>₹{total.toLocaleString()}</span>
+                    </div>
+                    {order.timeslotLabel && (
+                      <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-100">
+                        <span className="text-muted-foreground">Delivery Slot</span>
+                        <span className="font-semibold text-foreground text-right">{order.timeslotLabel}</span>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-100">
+                      <span className="text-muted-foreground">Payment Method</span>
+                      <span className="font-semibold text-foreground">{paymentMethodText}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">Payment Status</span>
+                      <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full text-white ${statusBg}`}>
+                        {statusLabel}
+                      </span>
+                    </div>
+                  </div>
 
-            {order.notes && (
-              <div className="rounded-lg p-2.5" style={{ backgroundColor: "#364F9F" }}>
-                <p className="text-[11px] font-semibold text-white mb-0.5">Order Notes</p>
-                <p className="text-xs text-white/90">{order.notes}</p>
-              </div>
-            )}
-            <p className="text-[11px] text-center text-muted-foreground pt-1">Thank you for shopping with FishTokri!</p>
+                  {order.notes && (
+                    <div className="rounded-lg p-2.5" style={{ backgroundColor: "#364F9F" }}>
+                      <p className="text-[11px] font-semibold text-white mb-0.5">Order Notes</p>
+                      <p className="text-xs text-white/90">{order.notes}</p>
+                    </div>
+                  )}
+                  <p className="text-[11px] text-center text-muted-foreground pt-1">Thank you for shopping with FishTokri!</p>
 
-            <button
-              onClick={() => downloadInvoicePDF(order, items, subtotal, deliveryFee, discount, total, date)}
-              className="w-full mt-3 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-[#364F9F] text-[#364F9F] text-sm font-semibold hover:bg-[#364F9F] hover:text-white transition-colors"
-              data-testid={`button-download-invoice-${order.id}`}
-            >
-              <Receipt className="w-4 h-4" />
-              Download Invoice PDF
-            </button>
+                  <button
+                    onClick={() => downloadInvoicePDF(order, items, subtotal, deliveryFee, discount, total, date)}
+                    className="w-full mt-3 flex items-center justify-center gap-2 py-2.5 rounded-full text-white text-sm font-semibold transition-colors"
+                    style={{ backgroundColor: "#364F9F" }}
+                    data-testid={`button-download-invoice-${order.id}`}
+                  >
+                    <img src={pdfIconImg} alt="" className="w-5 h-5 object-contain" style={{ filter: "brightness(0) invert(1)" }} />
+                    Download Invoice PDF
+                  </button>
+                </>
+              );
+            })()}
           </div>
         </div>
       )}

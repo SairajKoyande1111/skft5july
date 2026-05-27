@@ -19,9 +19,10 @@ const DUMMY_DETAILS: Record<string, { pieces: string; serves: string }> = {
 };
 
 export function ProductCard({ product }: { product: Product }) {
-  const { addToCart } = useCart();
+  const { addToCart, removeFromCart, items } = useCart();
   const [, setLocation] = useLocation();
   const isUnavailable = product.status === "unavailable";
+  const isInCart = items.some(i => i.id === product.id);
 
   const getFallbackImage = (category: string) => {
     switch (category) {
@@ -99,9 +100,18 @@ export function ProductCard({ product }: { product: Product }) {
             {discountPct && <span className="text-sm font-semibold text-green-600">{discountPct}% off</span>}
           </div>
           <Button
-            onClick={(e) => { e.stopPropagation(); addToCart(product); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (isInCart) {
+                removeFromCart(product.id);
+              } else {
+                addToCart(product);
+              }
+            }}
             disabled={isUnavailable}
-            className="rounded-full w-9 h-9 p-0 bg-primary hover:bg-[#F05B4E] text-white shadow-md flex items-center justify-center shrink-0 transition-colors"
+            className={`rounded-full w-9 h-9 p-0 text-white shadow-md flex items-center justify-center shrink-0 transition-colors ${
+              isInCart ? "bg-[#F05B4E] hover:bg-[#F05B4E]" : "bg-primary hover:bg-[#F05B4E]"
+            }`}
             size="icon"
           >
             {isUnavailable ? <span className="text-[10px]">Out</span> : <Plus className="w-5 h-5 text-white" />}

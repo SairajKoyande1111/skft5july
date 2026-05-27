@@ -64,7 +64,7 @@ export default function Home() {
   const { data: categories = [] } = useQuery<Category[]>({ queryKey: ["/api/categories"] });
   const { data: sections = [] } = useQuery<Section[]>({ queryKey: ["/api/sections"] });
   const { data: combos = [] } = useQuery<Combo[]>({ queryKey: ["/api/combos"] });
-  const { addToCart } = useCart();
+  const { addToCart, removeFromCart, items: cartItems } = useCart();
   const [activeCategory, setActiveCategory] = useState("All");
   const [currentBanner, setCurrentBanner] = useState(0);
   const [view, setView] = useState<"home" | "category">("home");
@@ -292,41 +292,53 @@ export default function Home() {
                                       <span className="text-sm font-semibold text-green-600" data-testid={`text-combo-discount-${combo.id}`}>{showPct}% off</span>
                                     )}
                                   </div>
-                                  <Button
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      const comboCategories = combo.includes
-                                        .slice(0, 3)
-                                        .map(inc => productMap[inc.productId]?.category ?? "Fish");
-                                      const qtysWithLimits = combo.includes
-                                        .map(inc => productMap[inc.productId]?.availableQty)
-                                        .filter((q): q is number => q != null);
-                                      const comboAvailableQty = qtysWithLimits.length > 0
-                                        ? Math.min(...qtysWithLimits) : null;
-                                      addToCart({
-                                        id: -Math.abs(parseInt(combo.id.slice(-6), 16) || 9999),
-                                        originalId: combo.id,
-                                        name: combo.name, price: combo.discountedPrice,
-                                        category: "Combo", status: "available",
-                                        unit: combo.weight, imageUrl: null,
-                                        isArchived: false, updatedAt: new Date(),
-                                        limitedStockNote: null, sectionId: null, isCombo: true,
-                                        comboImages,
-                                        comboCategories,
-                                        availableQty: comboAvailableQty,
-                                        comboIncludes: combo.includes.map(inc => ({
-                                          productId: inc.productId,
-                                          quantity: inc.quantity ?? 1,
-                                          availableQty: productMap[inc.productId]?.availableQty ?? null,
-                                        })),
-                                      } as any);
-                                    }}
-                                    className="rounded-full w-9 h-9 p-0 bg-primary hover:bg-[#F05B4E] text-white shadow-md flex items-center justify-center shrink-0 transition-colors"
-                                    size="icon"
-                                    data-testid={`button-add-combo-${combo.id}`}
-                                  >
-                                    <Plus className="w-5 h-5 text-white" />
-                                  </Button>
+                                  {(() => {
+                                    const comboCartId = -Math.abs(parseInt(combo.id.slice(-6), 16) || 9999);
+                                    const isComboInCart = cartItems.some(i => i.id === comboCartId);
+                                    return (
+                                      <Button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          if (isComboInCart) {
+                                            removeFromCart(comboCartId);
+                                          } else {
+                                            const comboCategories = combo.includes
+                                              .slice(0, 3)
+                                              .map(inc => productMap[inc.productId]?.category ?? "Fish");
+                                            const qtysWithLimits = combo.includes
+                                              .map(inc => productMap[inc.productId]?.availableQty)
+                                              .filter((q): q is number => q != null);
+                                            const comboAvailableQty = qtysWithLimits.length > 0
+                                              ? Math.min(...qtysWithLimits) : null;
+                                            addToCart({
+                                              id: comboCartId,
+                                              originalId: combo.id,
+                                              name: combo.name, price: combo.discountedPrice,
+                                              category: "Combo", status: "available",
+                                              unit: combo.weight, imageUrl: null,
+                                              isArchived: false, updatedAt: new Date(),
+                                              limitedStockNote: null, sectionId: null, isCombo: true,
+                                              comboImages,
+                                              comboCategories,
+                                              availableQty: comboAvailableQty,
+                                              comboIncludes: combo.includes.map(inc => ({
+                                                productId: inc.productId,
+                                                quantity: inc.quantity ?? 1,
+                                                availableQty: productMap[inc.productId]?.availableQty ?? null,
+                                              })),
+                                            } as any);
+                                          }
+                                        }}
+                                        className={`rounded-full w-9 h-9 p-0 text-white shadow-md flex items-center justify-center shrink-0 transition-colors ${
+                                          isComboInCart ? "bg-[#F05B4E] hover:bg-[#F05B4E]" : "bg-primary hover:bg-[#F05B4E]"
+                                        }`}
+                                        size="icon"
+                                        data-testid={`button-add-combo-${combo.id}`}
+                                      >
+                                        <Plus className="w-5 h-5 text-white" />
+                                      </Button>
+                                    );
+                                  })()}
                                 </div>
                               </div>
                             </div>
