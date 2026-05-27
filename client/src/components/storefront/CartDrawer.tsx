@@ -703,10 +703,10 @@ export function CartDrawer() {
                               <p className="text-xs text-muted-foreground">{item.unit}</p>
                               <div className="flex items-center gap-2 mt-1">
                                 <span className="text-sm font-bold text-primary">₹{item.price}</span>
-                                {!item.isCombo && (
+                                {!item.isCombo && item.originalPrice && item.originalPrice > item.price && (
                                   <>
-                                    <span className="text-xs text-muted-foreground line-through">₹{Math.round(item.price / 0.9)}</span>
-                                    <span className="text-[10px] font-semibold text-emerald-600">10% off</span>
+                                    <span className="text-xs text-muted-foreground line-through">₹{item.originalPrice}</span>
+                                    <span className="text-[10px] font-semibold text-emerald-600">{Math.round((1 - item.price / item.originalPrice) * 100)}% off</span>
                                   </>
                                 )}
                               </div>
