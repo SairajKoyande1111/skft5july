@@ -210,6 +210,21 @@ export function CartDrawer() {
     await applyCartCoupon(coupon);
   };
 
+  // Clear coupon error when cart is opened (stale errors from previous sessions shouldn't persist)
+  useEffect(() => {
+    if (isCartOpen) {
+      setCouponError("");
+    }
+  }, [isCartOpen]);
+
+  // Clear coupon error when usage data refreshes and the applied/errored coupon is now valid
+  useEffect(() => {
+    if (!couponError || !userCouponUsage) return;
+    // Find the coupon that caused the error (by checking if any cart coupon now shows not-exhausted)
+    const allNowValid = cartCoupons.every(c => !userCouponUsage[c.code]?.isExhausted);
+    if (allNowValid) setCouponError("");
+  }, [userCouponUsage]);
+
   // Clear coupon input when cart is emptied
   useEffect(() => {
     if (items.length === 0) {
