@@ -1,11 +1,17 @@
 import { useState, useRef, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
+import { CheckCircle2, Loader2, ArrowLeft } from "lucide-react";
 import { useHub, SuperHub, SubHub } from "@/context/HubContext";
 import Lottie from "lottie-react";
 import deliveryAnim from "@assets/animation-original_(21)_1779949238004.json";
+import whatsappIcon from "@assets/logo_(16)_1779950540352.png";
+import callIcon from "@assets/call_(2)_1779950579819.png";
+import scooterImg from "@assets/animation-original_(51)_1779950354153.png";
 
 const BRAND_BLUE = "#364F9F";
+const PHONE = "+919220200100";
+const PHONE_DISPLAY = "+91 92202 00100";
+const WA_LINK = `https://wa.me/${PHONE.replace("+", "")}?text=${encodeURIComponent("Hi FishTokri! I'd like to place an order for outstation delivery.")}`;
 
 type CheckStatus = "idle" | "checking" | "eligible" | "ineligible";
 
@@ -57,7 +63,7 @@ export function LocationPicker() {
           setAreaName(matchedSub.name);
           setStatus("eligible");
           setHub(matchedSuper, matchedSub);
-          setTimeout(() => { closePicker(); reset(); }, 2000);
+          setTimeout(() => { closePicker(); reset(); }, 2200);
           return;
         }
       }
@@ -71,9 +77,7 @@ export function LocationPicker() {
     newDigits[index] = digit;
     setDigits(newDigits);
     if (status !== "idle") setStatus("idle");
-    if (digit && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
+    if (digit && index < 5) inputRefs.current[index + 1]?.focus();
     if (digit && index === 5) {
       const full = newDigits.join("");
       if (full.length === 6) setTimeout(handleCheck, 50);
@@ -102,114 +106,184 @@ export function LocationPicker() {
       const newDigits = [...pasted.split(""), ...Array(6 - pasted.length).fill("")].slice(0, 6);
       setDigits(newDigits);
       if (status !== "idle") setStatus("idle");
-      const nextIndex = Math.min(pasted.length, 5);
-      inputRefs.current[nextIndex]?.focus();
+      inputRefs.current[Math.min(pasted.length, 5)]?.focus();
     }
     e.preventDefault();
   };
 
-  const handleClose = () => {
-    closePicker();
-    reset();
-  };
+  const handleClose = () => { closePicker(); reset(); };
 
   if (!isPickerOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[300] flex items-center justify-center px-4" style={{ fontFamily: "'Poppins', sans-serif" }}>
+    <div
+      className="fixed inset-0 z-[300] flex items-center justify-center px-4"
+      style={{ fontFamily: "'Poppins', sans-serif" }}
+    >
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={handleClose} />
 
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 fade-in duration-200">
+      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
 
-        {/* Lottie animation */}
-        <div className="flex justify-center pt-7 pb-1 px-6">
-          <div className="w-44 h-44">
-            <Lottie animationData={deliveryAnim} loop autoplay />
-          </div>
-        </div>
+        {/* ── INELIGIBLE SCREEN ── */}
+        {status === "ineligible" ? (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 flex flex-col items-center px-6 pt-6 pb-7 text-center gap-0">
 
-        {/* Text */}
-        <div className="px-7 pb-2 text-center">
-          <h2 className="text-lg font-semibold text-slate-800 mb-1.5" style={{ fontWeight: 500 }}>
-            Check Availability
-          </h2>
-          <p className="text-sm leading-relaxed font-normal text-black">
-            Freshly cut seafood &amp; meat, hygienically packed and delivered to your doorstep.
-          </p>
-        </div>
+            {/* Scooter illustration */}
+            <img
+              src={scooterImg}
+              alt="Delivery"
+              className="w-36 h-auto object-contain mb-3"
+            />
 
-        {/* 6-box pincode input — square boxes */}
-        <div className="px-7 py-5">
-          <div className="flex items-center justify-center gap-2">
-            {digits.map((digit, i) => (
-              <input
-                key={i}
-                ref={(el) => { inputRefs.current[i] = el; }}
-                type="tel"
-                inputMode="numeric"
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleDigitChange(i, e.target.value)}
-                onKeyDown={(e) => handleKeyDown(i, e)}
-                onPaste={i === 0 ? handlePaste : undefined}
-                autoFocus={i === 0}
-                className="w-10 h-10 text-center text-base font-semibold rounded-lg border-2 outline-none transition-all duration-150 text-slate-800"
-                style={{
-                  borderColor:
-                    status === "eligible"
-                      ? "#22c55e"
-                      : status === "ineligible"
-                      ? "#ef4444"
-                      : digit
-                      ? BRAND_BLUE
-                      : "#e2e8f0",
-                  boxShadow: digit ? `0 0 0 2px ${BRAND_BLUE}20` : "none",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
-                data-testid={`input-pincode-${i}`}
-              />
-            ))}
-          </div>
+            {/* Headline */}
+            <p className="text-base font-semibold text-slate-800 mb-1" style={{ fontWeight: 600 }}>
+              We can still reach you! 🚚
+            </p>
 
-          {/* Status messages */}
-          {status === "eligible" && (
-            <div className="flex items-center justify-center gap-2 mt-3 animate-in fade-in duration-200">
-              <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
-              <p className="text-sm font-medium text-green-700" style={{ fontWeight: 500 }}>
-                We deliver to <span className="font-semibold">{areaName}</span>!
+            {/* Body */}
+            <p className="text-sm text-slate-500 leading-relaxed mb-1" style={{ fontWeight: 400 }}>
+              Online ordering isn't available for{" "}
+              <span className="font-semibold text-slate-700">{pincode}</span> yet — but we
+              deliver via <span className="font-semibold text-slate-700">Porter</span> right
+              to your doorstep.
+            </p>
+
+            {/* Outstation callout */}
+            <div
+              className="w-full rounded-2xl px-4 py-3 mb-4 text-left"
+              style={{ backgroundColor: "#EEF1FA" }}
+            >
+              <p className="text-xs font-semibold mb-0.5" style={{ color: BRAND_BLUE }}>
+                📦 Outstation Delivery Available
+              </p>
+              <p className="text-xs text-slate-500 leading-relaxed" style={{ fontWeight: 400 }}>
+                We ship in insulated cold-store boxes so your seafood &amp; meat arrives
+                perfectly fresh — no matter the distance.
               </p>
             </div>
-          )}
 
-          {status === "ineligible" && (
-            <div className="flex items-center justify-center gap-2 mt-3 animate-in fade-in duration-200">
-              <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-              <p className="text-sm font-medium text-slate-600" style={{ fontWeight: 400 }}>
-                Sorry, we don't deliver to <span className="font-semibold">{pincode}</span> yet.
+            {/* Contact buttons */}
+            <div className="w-full flex flex-col gap-2.5">
+              <a
+                href={WA_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 w-full rounded-2xl px-4 py-3 transition-opacity hover:opacity-90 active:opacity-75"
+                style={{ backgroundColor: "#25D366" }}
+                data-testid="link-whatsapp-outstation"
+              >
+                <img src={whatsappIcon} alt="WhatsApp" className="w-7 h-7 rounded-lg flex-shrink-0" />
+                <div className="text-left">
+                  <p className="text-white text-xs font-semibold leading-none mb-0.5">Chat on WhatsApp</p>
+                  <p className="text-white/90 text-xs font-normal">{PHONE_DISPLAY}</p>
+                </div>
+              </a>
+
+              <a
+                href={`tel:${PHONE}`}
+                className="flex items-center gap-3 w-full rounded-2xl px-4 py-3 transition-opacity hover:opacity-90 active:opacity-75"
+                style={{ backgroundColor: "#2196F3" }}
+                data-testid="link-call-outstation"
+              >
+                <img src={callIcon} alt="Call" className="w-7 h-7 rounded-full flex-shrink-0" />
+                <div className="text-left">
+                  <p className="text-white text-xs font-semibold leading-none mb-0.5">Call Us</p>
+                  <p className="text-white/90 text-xs font-normal">{PHONE_DISPLAY}</p>
+                </div>
+              </a>
+            </div>
+
+            {/* Try again */}
+            <button
+              onClick={reset}
+              className="mt-4 flex items-center gap-1.5 text-xs font-medium transition-opacity hover:opacity-70"
+              style={{ color: BRAND_BLUE }}
+              data-testid="button-try-another-pincode"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Try another pincode
+            </button>
+          </div>
+
+        ) : (
+          /* ── MAIN PINCODE SCREEN ── */
+          <>
+            {/* Lottie animation */}
+            <div className="flex justify-center pt-7 pb-1 px-6">
+              <div className="w-44 h-44">
+                <Lottie animationData={deliveryAnim} loop autoplay />
+              </div>
+            </div>
+
+            {/* Text */}
+            <div className="px-7 pb-2 text-center">
+              <h2 className="text-lg mb-1.5 text-slate-800" style={{ fontWeight: 500 }}>
+                Enter Your Pincode
+              </h2>
+              <p className="text-sm leading-relaxed font-normal text-black">
+                Freshly cut seafood &amp; meat, hygienically packed and delivered to your doorstep.
               </p>
             </div>
-          )}
-        </div>
 
-        {/* Check Availability button */}
-        <div className="px-7 pb-7">
-          <button
-            onClick={handleCheck}
-            disabled={pincode.length !== 6 || status === "checking"}
-            className="w-full h-12 rounded-full text-white text-sm font-medium transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            style={{ backgroundColor: BRAND_BLUE, fontFamily: "'Poppins', sans-serif", fontWeight: 500 }}
-            data-testid="button-check-pincode"
-          >
-            {status === "checking" ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Checking...
-              </>
-            ) : (
-              "Check Availability"
-            )}
-          </button>
-        </div>
+            {/* 6-box pincode input */}
+            <div className="px-7 py-5">
+              <div className="flex items-center justify-center gap-2">
+                {digits.map((digit, i) => (
+                  <input
+                    key={i}
+                    ref={(el) => { inputRefs.current[i] = el; }}
+                    type="tel"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleDigitChange(i, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(i, e)}
+                    onPaste={i === 0 ? handlePaste : undefined}
+                    autoFocus={i === 0}
+                    className="w-10 h-10 text-center text-base font-semibold rounded-lg border-2 outline-none transition-all duration-150 text-slate-800"
+                    style={{
+                      borderColor:
+                        status === "eligible" ? "#22c55e" : digit ? BRAND_BLUE : "#e2e8f0",
+                      boxShadow: digit ? `0 0 0 2px ${BRAND_BLUE}20` : "none",
+                      fontFamily: "'Poppins', sans-serif",
+                    }}
+                    data-testid={`input-pincode-${i}`}
+                  />
+                ))}
+              </div>
+
+              {/* Success message */}
+              {status === "eligible" && (
+                <div className="flex items-center justify-center gap-2 mt-3 animate-in fade-in duration-200">
+                  <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
+                  <p className="text-sm font-medium text-green-700" style={{ fontWeight: 500 }}>
+                    We deliver to <span className="font-semibold">{areaName}</span>! 🎉
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Button */}
+            <div className="px-7 pb-7">
+              <button
+                onClick={handleCheck}
+                disabled={pincode.length !== 6 || status === "checking"}
+                className="w-full h-12 rounded-full text-white text-sm transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                style={{ backgroundColor: BRAND_BLUE, fontFamily: "'Poppins', sans-serif", fontWeight: 500 }}
+                data-testid="button-check-pincode"
+              >
+                {status === "checking" ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Checking...
+                  </>
+                ) : (
+                  "Check Availability"
+                )}
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
