@@ -50,6 +50,9 @@ import prawnsImg from "@assets/Gemini_Generated_Image_5xy0sd5xy0sd5xy0_177271309
 import chickenImg from "@assets/Gemini_Generated_Image_g0ecb4g0ecb4g0ec_1772713219972.png";
 import muttonImg from "@assets/Gemini_Generated_Image_8fq0338fq0338fq0_1772713565349.png";
 import masalaImg from "@assets/Gemini_Generated_Image_4e60a64e60a64e60_1772713888468.png";
+import scooterImg from "@assets/animation-original_(51)_1779950354153.png";
+import whatsappIcon from "@assets/logo_(16)_1779950540352.png";
+import callIcon from "@assets/call_(2)_1779950579819.png";
 
 const addressTypeColors: Record<string, string> = {
   house: "bg-blue-100 text-blue-700",
@@ -128,6 +131,8 @@ export function CartDrawer() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod");
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [showUnserviceablePopup, setShowUnserviceablePopup] = useState(false);
+  const [unserviceablePincode, setUnserviceablePincode] = useState("");
   const [selectedTimeslotId, setSelectedTimeslotId] = useState<string | null>(null);
   const [expandedInstructions, setExpandedInstructions] = useState<Record<number, boolean>>({});
   const [useWallet, setUseWallet] = useState(false);
@@ -387,6 +392,18 @@ export function CartDrawer() {
 
   const pincodeDeliveryCharge = pincodeConfig?.charge ?? 0;
   const pincodeTimeDelay = pincodeConfig?.timeDelay ?? 0;
+
+  // Show "We can still reach you!" popup when selected address pincode is not serviceable
+  useEffect(() => {
+    const selected = savedAddresses.find(a => a.id === activeAddressId);
+    if (!selected?.pincode || selected.pincode.length < 6) return;
+    if (!selectedSubHub?.pincodes?.length) return;
+    const matched = selectedSubHub.pincodes.find(p => p.pincode === selected.pincode);
+    if (!matched) {
+      setUnserviceablePincode(selected.pincode);
+      setShowUnserviceablePopup(true);
+    }
+  }, [activeAddressId, savedAddresses, selectedSubHub]);
 
   // Add N minutes to a formatted time string and return 12h format
   const addMinutesToTime = useCallback((timeStr: string, minutes: number): string => {
@@ -1739,6 +1756,71 @@ export function CartDrawer() {
             >
               {isSavingAddress ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Saving...</> : "Save Address"}
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Unserviceable pincode popup */}
+      <Dialog open={showUnserviceablePopup} onOpenChange={setShowUnserviceablePopup}>
+        <DialogContent className="max-w-sm rounded-3xl p-0 overflow-hidden border-0 shadow-2xl" style={{ fontFamily: "'Poppins', sans-serif" }}>
+          <div className="flex flex-col items-center px-6 pt-6 pb-7 text-center gap-0">
+            <img src={scooterImg} alt="Delivery" className="w-36 h-auto object-contain mb-3" />
+
+            <p className="text-base font-semibold text-slate-800 mb-1" style={{ fontWeight: 600 }}>
+              We can still reach you! 🚚
+            </p>
+
+            <p className="text-sm text-slate-500 leading-relaxed mb-4" style={{ fontWeight: 400 }}>
+              Online ordering isn't available for{" "}
+              <span className="font-semibold text-slate-700">{unserviceablePincode}</span> yet, but we
+              deliver via <span className="font-semibold text-slate-700">Porter</span> right
+              to your doorstep.
+            </p>
+
+            <div className="w-full rounded-2xl px-4 py-3 mb-4 text-left" style={{ backgroundColor: "#EEF1FA" }}>
+              <p className="text-xs font-semibold mb-0.5" style={{ color: "#364F9F" }}>
+                📦 Outstation Delivery Available
+              </p>
+              <p className="text-xs text-slate-500 leading-relaxed" style={{ fontWeight: 400 }}>
+                We ship in insulated cold-store boxes so your seafood &amp; meat arrives
+                perfectly fresh, no matter the distance.
+              </p>
+            </div>
+
+            <div className="w-full flex flex-col gap-2.5 mb-4">
+              <a
+                href={`https://wa.me/919220200100?text=${encodeURIComponent("Hi FishTokri! I'd like to place an order for outstation delivery.")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 w-full rounded-2xl px-4 py-3 transition-opacity hover:opacity-90 active:opacity-75"
+                style={{ backgroundColor: "#25D366" }}
+              >
+                <img src={whatsappIcon} alt="WhatsApp" className="w-7 h-7 rounded-lg flex-shrink-0" />
+                <div className="text-left">
+                  <p className="text-white text-xs font-semibold leading-none mb-0.5">Chat on WhatsApp</p>
+                  <p className="text-white/90 text-xs font-normal">+91 92202 00100</p>
+                </div>
+              </a>
+              <a
+                href="tel:+919220200100"
+                className="flex items-center gap-3 w-full rounded-2xl px-4 py-3 transition-opacity hover:opacity-90 active:opacity-75"
+                style={{ backgroundColor: "#2196F3" }}
+              >
+                <img src={callIcon} alt="Call" className="w-7 h-7 rounded-full flex-shrink-0" />
+                <div className="text-left">
+                  <p className="text-white text-xs font-semibold leading-none mb-0.5">Call Us</p>
+                  <p className="text-white/90 text-xs font-normal">+91 92202 00100</p>
+                </div>
+              </a>
+            </div>
+
+            <button
+              onClick={() => setShowUnserviceablePopup(false)}
+              className="text-xs font-medium transition-opacity hover:opacity-70"
+              style={{ color: "#364F9F" }}
+            >
+              Close
+            </button>
           </div>
         </DialogContent>
       </Dialog>

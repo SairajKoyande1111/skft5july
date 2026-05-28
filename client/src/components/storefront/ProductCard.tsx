@@ -146,7 +146,14 @@ export function ProductCard({ product }: { product: Product }) {
               className="flex items-center gap-0 rounded-full bg-primary shadow-md overflow-hidden shrink-0"
               data-testid={`stepper-product-${product.id}`}
             >
-              <span className="text-white font-semibold text-xs pl-3 min-w-[24px] text-center select-none">
+              <button
+                onClick={handleDecrease}
+                data-testid={`button-decrease-product-${product.id}`}
+                className="w-7 h-7 flex items-center justify-center text-white hover:bg-white/20 transition-colors"
+              >
+                <Minus className="w-3 h-3" />
+              </button>
+              <span className="text-white font-semibold text-xs min-w-[24px] text-center select-none">
                 {qty}
               </span>
               <button

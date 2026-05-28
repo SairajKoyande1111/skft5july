@@ -146,7 +146,7 @@ export function LocationPicker() {
             {/* Body */}
             <p className="text-sm text-slate-500 leading-relaxed mb-1" style={{ fontWeight: 400 }}>
               Online ordering isn't available for{" "}
-              <span className="font-semibold text-slate-700">{pincode}</span> yet — but we
+              <span className="font-semibold text-slate-700">{pincode}</span> yet, but we
               deliver via <span className="font-semibold text-slate-700">Porter</span> right
               to your doorstep.
             </p>
@@ -161,7 +161,7 @@ export function LocationPicker() {
               </p>
               <p className="text-xs text-slate-500 leading-relaxed" style={{ fontWeight: 400 }}>
                 We ship in insulated cold-store boxes so your seafood &amp; meat arrives
-                perfectly fresh — no matter the distance.
+                perfectly fresh, no matter the distance.
               </p>
             </div>
 
