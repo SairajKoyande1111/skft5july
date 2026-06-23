@@ -129,6 +129,7 @@ export function CartDrawer() {
   const [, navigate] = useLocation();
 
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "online">("cod");
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [showUnserviceablePopup, setShowUnserviceablePopup] = useState(false);
@@ -587,13 +588,18 @@ export function CartDrawer() {
   const walletDeduction = useWallet ? Math.min(walletBalance, rawTotal) : 0;
   const finalTotal = rawTotal - walletDeduction;
 
-  const placeOrder = () => {
-    const selected = savedAddresses.find(a => a.id === activeAddressId);
-    if (!selected) return;
-    if (!selectedTimeslot) {
-      toast({ title: "Please select a delivery time slot", variant: "destructive" });
-      return;
-    }
+  const loadRazorpayScript = (): Promise<boolean> => {
+    return new Promise((resolve) => {
+      if ((window as any).Razorpay) { resolve(true); return; }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  const buildOrderPayload = (selected: CustomerAddress, razorpayPaymentId?: string) => {
     const fullAddress = `${selected.building} · ${selected.street}, ${selected.area} · ${selected.pincode}`;
     const orderItems = items.map(i => ({
       productId: i.originalId ?? String(i.id),
@@ -603,90 +609,180 @@ export function CartDrawer() {
       unit: (i as any).unit ?? null,
       imageUrl: i.imageUrl ?? null,
     }));
-    const slotLabel = selectedTimeslot.isInstant ? "Instant Delivery (Porter)" : getAdjustedSlotLabel(selectedTimeslot);
-    const instantCharge = selectedTimeslot.isInstant ? (selectedTimeslot.extraCharge ?? 0) : 0;
+    const slotLabel = selectedTimeslot!.isInstant ? "Instant Delivery (Porter)" : getAdjustedSlotLabel(selectedTimeslot!);
+    const instantCharge = selectedTimeslot!.isInstant ? (selectedTimeslot!.extraCharge ?? 0) : 0;
     const slotCharge = pincodeDeliveryCharge + instantCharge;
     const subtotal = totalPrice;
     const today = new Date();
     const orderDate = isNextDay ? new Date(today.getTime() + 24 * 60 * 60 * 1000) : today;
     const deliveryDate = `${orderDate.getFullYear()}-${String(orderDate.getMonth() + 1).padStart(2, "0")}-${String(orderDate.getDate()).padStart(2, "0")}`;
 
-    // Build payments array per admin-panel spec:
-    // - wallet entry first (if wallet used), then remaining cash/UPI entry
-    // - pure COD: add a cash entry for record keeping (cash is never settled until physically received)
-    // - Cash never counts toward paidAmount; only wallet and UPI are instantly settled
     const cashMode = paymentMethod === "online" ? "upi" : "cash";
     const paidAt = new Date().toISOString();
     const orderPayments: Array<{ mode: string; amount: number; reference: string; paidAt: string }> = [];
     if (walletDeduction > 0) {
       orderPayments.push({ mode: "wallet", amount: walletDeduction, reference: "", paidAt });
       if (finalTotal > 0) {
-        orderPayments.push({ mode: cashMode, amount: finalTotal, reference: "", paidAt });
+        orderPayments.push({ mode: cashMode, amount: finalTotal, reference: razorpayPaymentId ?? "", paidAt });
       }
     } else if (paymentMethod === "online") {
-      orderPayments.push({ mode: "upi", amount: rawTotal, reference: "", paidAt });
+      orderPayments.push({ mode: "upi", amount: rawTotal, reference: razorpayPaymentId ?? "", paidAt });
     } else {
-      // Pure COD — record the cash entry but it does not count as paid until received
       orderPayments.push({ mode: "cash", amount: rawTotal, reference: "", paidAt });
     }
 
-    // Cash is never instantly settled — only wallet and UPI count toward paidAmount
     const paidAmount = orderPayments
       .filter(p => p.mode !== "cash")
       .reduce((sum, p) => sum + p.amount, 0);
     const dueAmount = rawTotal - paidAmount;
     const paymentStatus = paidAmount === 0 ? "unpaid" : paidAmount >= rawTotal ? "paid" : "partial";
 
-    createOrder(
-      {
-        customerName: selected.name || customer?.name || "",
-        phone: selected.phone || customer?.phone || "",
-        email: customer?.email ?? null,
-        customerId: customer?.id ?? null,
-        deliveryArea: selected.area,
-        address: fullAddress,
-        deliveryAddressDetail: {
-          _id: selected.id,
-          name: selected.name,
-          phone: selected.phone,
-          building: selected.building,
-          street: selected.street,
-          area: selected.area,
-          pincode: selected.pincode,
-          type: selected.type,
-          label: selected.label,
-          instructions: selected.instructions,
-        },
-        notes: selected.instructions || "",
-        items: orderItems,
-        subtotal,
-        discount: discountAmount,
-        slotCharge,
-        total: rawTotal,
-        payments: orderPayments,
-        paidAmount,
-        dueAmount,
-        paymentStatus,
-        source: "online",
-        deliveryType: "delivery",
-        scheduleType: selectedTimeslot.isInstant ? "instant" : "slot",
-        timeslotId: selectedTimeslot.id,
-        timeslotLabel: slotLabel,
-        timeslotStart: (selectedTimeslot as any).startTime ?? null,
-        timeslotEnd: (selectedTimeslot as any).endTime ?? null,
-        deliveryDate,
-        couponCode: appliedCoupon?.code ?? null,
-        discountAmount: discountAmount > 0 ? discountAmount : null,
-        paymentMode: paymentMethod === "online" ? "upi" : "cash",
-      } as any,
-      {
-        onSuccess: () => {
-          setIsSuccess(true);
-          clearCart();
-          setUseWallet(false);
-        }
+    return {
+      customerName: selected.name || customer?.name || "",
+      phone: selected.phone || customer?.phone || "",
+      email: customer?.email ?? null,
+      customerId: customer?.id ?? null,
+      deliveryArea: selected.area,
+      address: fullAddress,
+      deliveryAddressDetail: {
+        _id: selected.id,
+        name: selected.name,
+        phone: selected.phone,
+        building: selected.building,
+        street: selected.street,
+        area: selected.area,
+        pincode: selected.pincode,
+        type: selected.type,
+        label: selected.label,
+        instructions: selected.instructions,
+      },
+      notes: selected.instructions || "",
+      items: orderItems,
+      subtotal,
+      discount: discountAmount,
+      slotCharge,
+      total: rawTotal,
+      payments: orderPayments,
+      paidAmount,
+      dueAmount,
+      paymentStatus,
+      source: "online",
+      deliveryType: "delivery",
+      scheduleType: selectedTimeslot!.isInstant ? "instant" : "slot",
+      timeslotId: selectedTimeslot!.id,
+      timeslotLabel: slotLabel,
+      timeslotStart: (selectedTimeslot as any).startTime ?? null,
+      timeslotEnd: (selectedTimeslot as any).endTime ?? null,
+      deliveryDate,
+      couponCode: appliedCoupon?.code ?? null,
+      discountAmount: discountAmount > 0 ? discountAmount : null,
+      paymentMode: paymentMethod === "online" ? "upi" : "cash",
+    } as any;
+  };
+
+  const placeOrder = async () => {
+    const selected = savedAddresses.find(a => a.id === activeAddressId);
+    if (!selected) return;
+    if (!selectedTimeslot) {
+      toast({ title: "Please select a delivery time slot", variant: "destructive" });
+      return;
+    }
+
+    // COD flow: place order directly
+    if (paymentMethod === "cod") {
+      createOrder(buildOrderPayload(selected), {
+        onSuccess: () => { setIsSuccess(true); clearCart(); setUseWallet(false); }
+      });
+      return;
+    }
+
+    // UPI flow: go through Razorpay
+    setIsProcessingPayment(true);
+    try {
+      const scriptLoaded = await loadRazorpayScript();
+      if (!scriptLoaded) {
+        toast({ title: "Payment gateway unavailable. Please try again.", variant: "destructive" });
+        setIsProcessingPayment(false);
+        return;
       }
-    );
+
+      const res = await fetch("/api/razorpay/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: finalTotal }),
+      });
+      if (!res.ok) {
+        toast({ title: "Could not initiate payment. Please try again.", variant: "destructive" });
+        setIsProcessingPayment(false);
+        return;
+      }
+      const { order_id, amount: rzpAmount, currency } = await res.json();
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: rzpAmount,
+        currency,
+        name: "FishTokri",
+        description: "Fresh seafood & meat delivery",
+        order_id,
+        prefill: {
+          name: selected.name || customer?.name || "",
+          contact: `91${selected.phone || customer?.phone || ""}`,
+          email: customer?.email || "",
+        },
+        config: {
+          display: {
+            hide: [
+              { method: "card" },
+              { method: "netbanking" },
+              { method: "wallet" },
+              { method: "emi" },
+              { method: "paylater" },
+            ],
+            preferences: { show_default_blocks: false },
+          },
+        },
+        handler: async (response: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => {
+          try {
+            const verifyRes = await fetch("/api/razorpay/verify-payment", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
+            });
+            const verifyData = await verifyRes.json();
+            if (!verifyData.verified) {
+              toast({ title: "Payment verification failed. Contact support.", variant: "destructive" });
+              setIsProcessingPayment(false);
+              return;
+            }
+            createOrder(buildOrderPayload(selected, response.razorpay_payment_id), {
+              onSuccess: () => { setIsSuccess(true); clearCart(); setUseWallet(false); setIsProcessingPayment(false); },
+              onError: () => { setIsProcessingPayment(false); },
+            });
+          } catch {
+            toast({ title: "Payment failed. Please contact support.", variant: "destructive" });
+            setIsProcessingPayment(false);
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            setIsProcessingPayment(false);
+            toast({ title: "Payment cancelled", variant: "destructive" });
+          },
+        },
+        theme: { color: "#364F9F" },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch {
+      toast({ title: "Payment failed. Please try again.", variant: "destructive" });
+      setIsProcessingPayment(false);
+    }
   };
 
   // Safety net: always clear the cart when the success screen is shown,
@@ -1521,11 +1617,14 @@ export function CartDrawer() {
                       </div>
                       <Button
                         onClick={placeOrder}
-                        disabled={isPending || !customer || savedAddresses.length === 0}
+                        disabled={isPending || isProcessingPayment || !customer || savedAddresses.length === 0}
                         className="h-12 px-8 !rounded-full font-bold bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/20 flex items-center gap-2"
                         data-testid="button-place-order"
                       >
-                        {isPending ? "Placing..." : <>Proceed <ChevronRight className="w-4 h-4" /></>}
+                        {isPending || isProcessingPayment
+                          ? <><Loader2 className="w-4 h-4 animate-spin" />{paymentMethod === "online" && isProcessingPayment ? "Opening UPI..." : "Placing..."}</>
+                          : <>{paymentMethod === "online" ? "Pay via UPI" : "Proceed"} <ChevronRight className="w-4 h-4" /></>
+                        }
                       </Button>
                     </div>
                     {!customer && (
