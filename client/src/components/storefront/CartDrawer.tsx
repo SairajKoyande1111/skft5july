@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
+
 import Lottie from "lottie-react";
 import {
   CheckCircle2, Minus, Plus, ShoppingBag, Trash2,
@@ -860,18 +861,36 @@ export function CartDrawer() {
                 <FishTokriLogo className="h-16 w-auto" />
               </div>
               <div className="relative z-10 w-40 h-40 -mb-2">
-                <Lottie animationData={orderSuccessAnim} loop={false} autoplay style={{ width: "100%", height: "100%" }} />
+                <Lottie
+                  animationData={orderSuccessAnim}
+                  loop={false}
+                  autoplay
+                  style={{ width: "100%", height: "100%" }}
+                  onComplete={() => {
+                    setIsCartOpen(false);
+                    setTimeout(() => {
+                      setIsSuccess(false);
+                      navigate("/profile?tab=orders");
+                    }, 300);
+                  }}
+                />
               </div>
               <h2 className="relative z-10 text-2xl font-bold text-foreground mb-2">Order Placed!</h2>
               <p className="relative z-10 text-muted-foreground text-base mb-8 max-w-[260px]">
                 Thank you! We'll contact you shortly to confirm your delivery.
               </p>
               <Button
-                onClick={() => handleClose(false)}
+                onClick={() => {
+                  setIsCartOpen(false);
+                  setTimeout(() => {
+                    setIsSuccess(false);
+                    navigate("/profile?tab=orders");
+                  }, 300);
+                }}
                 size="lg"
                 className="relative z-10 w-full max-w-[220px] !rounded-full font-semibold bg-orange-500 text-white hover:bg-orange-600 shadow-lg shadow-orange-500/20"
               >
-                Back to Store
+                View My Orders
               </Button>
             </div>
           ) : (

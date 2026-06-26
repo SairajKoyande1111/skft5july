@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useProducts } from "@/hooks/use-products";
 import Lottie from "lottie-react";
@@ -801,7 +801,11 @@ export default function Profile() {
   const { selectedSubHub } = useHub();
   const queryClient = useQueryClient();
 
-  const [activeTab, setActiveTab] = useState<Tab>("Profile & Addresses");
+  const search = useSearch();
+  const [activeTab, setActiveTab] = useState<Tab>(() => {
+    const params = new URLSearchParams(search);
+    return params.get("tab") === "orders" ? "My Orders" : "Profile & Addresses";
+  });
   const [ordersSubTab, setOrdersSubTab] = useState<OrdersSubTab>("current");
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
