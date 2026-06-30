@@ -143,6 +143,11 @@ export default function Home() {
   const handleLogoClick = () => {
     setView("home");
     setSearchQuery("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleLogoClickHome = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   if (view === "category") {
@@ -270,7 +275,7 @@ export default function Home() {
       <Header onSearch={(q) => {
         setSearchQuery(q);
         if (q) setView("category");
-      }} />
+      }} onLogoClick={handleLogoClickHome} />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-5">
         {/* Banner Carousel */}

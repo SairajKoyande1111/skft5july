@@ -1,5 +1,6 @@
 import { Switch, Route, useLocation } from "wouter";
 import { useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -23,46 +24,63 @@ import Orders from "@/pages/admin/Orders";
 import SectionsAdmin from "@/pages/admin/Sections";
 import AdminLayout from "@/components/admin/AdminLayout";
 
-function ScrollToTop() {
+const pageVariants = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -6 },
+};
+
+const pageTransition = { duration: 0.2, ease: "easeOut" };
+
+function AnimatedRouter() {
   const [location] = useLocation();
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [location]);
-  return null;
-}
 
-function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/profile" component={Profile} />
-      <Route path="/category/:categoryName" component={CategoryPage} />
-      <Route path="/product/:id" component={ProductDetail} />
-      <Route path="/recipe/product/:productId/:recipeIndex" component={RecipeDetail} />
-      <Route path="/recipe/:category/:index" component={RecipeDetail} />
-      <Route path="/combos" component={CombosPage} />
-      <Route path="/combo/:id" component={ComboDetail} />
-      <Route path="/add-address" component={AddAddress} />
-      <Route path="/admin/login" component={Login} />
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={location}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={pageTransition}
+      >
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/profile" component={Profile} />
+          <Route path="/category/:categoryName" component={CategoryPage} />
+          <Route path="/product/:id" component={ProductDetail} />
+          <Route path="/recipe/product/:productId/:recipeIndex" component={RecipeDetail} />
+          <Route path="/recipe/:category/:index" component={RecipeDetail} />
+          <Route path="/combos" component={CombosPage} />
+          <Route path="/combo/:id" component={ComboDetail} />
+          <Route path="/add-address" component={AddAddress} />
+          <Route path="/admin/login" component={Login} />
 
-      <Route path="/admin" component={() => (
-        <AdminLayout><Dashboard /></AdminLayout>
-      )} />
+          <Route path="/admin" component={() => (
+            <AdminLayout><Dashboard /></AdminLayout>
+          )} />
 
-      <Route path="/admin/products" component={() => (
-        <AdminLayout><Products /></AdminLayout>
-      )} />
+          <Route path="/admin/products" component={() => (
+            <AdminLayout><Products /></AdminLayout>
+          )} />
 
-      <Route path="/admin/orders" component={() => (
-        <AdminLayout><Orders /></AdminLayout>
-      )} />
+          <Route path="/admin/orders" component={() => (
+            <AdminLayout><Orders /></AdminLayout>
+          )} />
 
-      <Route path="/admin/sections" component={() => (
-        <AdminLayout><SectionsAdmin /></AdminLayout>
-      )} />
+          <Route path="/admin/sections" component={() => (
+            <AdminLayout><SectionsAdmin /></AdminLayout>
+          )} />
 
-      <Route component={NotFound} />
-    </Switch>
+          <Route component={NotFound} />
+        </Switch>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -74,8 +92,7 @@ function App() {
           <CartProvider>
             <TooltipProvider>
               <Toaster />
-              <ScrollToTop />
-              <Router />
+              <AnimatedRouter />
             </TooltipProvider>
           </CartProvider>
         </CustomerProvider>

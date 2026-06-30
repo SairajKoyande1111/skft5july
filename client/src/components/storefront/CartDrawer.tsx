@@ -1157,20 +1157,20 @@ export function CartDrawer() {
                             {/* Manual code entry */}
                             {!appliedCoupon && (
                               <div className="px-4 py-3 border-t border-border/20">
-                                <div className="flex gap-2">
+                                <div className="flex gap-2 w-full min-w-0">
                                   <input
                                     type="text"
                                     value={couponInput}
                                     onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponError(""); }}
                                     onKeyDown={e => e.key === "Enter" && applyFromInput()}
                                     placeholder="Enter coupon code"
-                                    className="flex-1 h-9 px-4 text-sm font-mono font-semibold tracking-wider rounded-full border border-border/60 bg-muted/30 focus:outline-none focus:border-[#364F9F] placeholder:font-normal placeholder:tracking-normal"
+                                    className="flex-1 min-w-0 h-9 px-4 text-sm font-mono font-semibold tracking-wider rounded-full border border-border/60 bg-muted/30 focus:outline-none focus:border-[#364F9F] placeholder:font-normal placeholder:tracking-normal"
                                     data-testid="input-coupon-code"
                                   />
                                   <button
                                     onClick={applyFromInput}
                                     disabled={!couponInput.trim() || isApplyingCoupon}
-                                    className="px-5 h-9 rounded-full text-white text-xs font-bold disabled:opacity-40 transition-colors flex items-center gap-1.5"
+                                    className="shrink-0 whitespace-nowrap px-4 h-9 rounded-full text-white text-xs font-bold disabled:opacity-40 transition-colors flex items-center gap-1.5"
                                     style={{ backgroundColor: "#364F9F" }}
                                     data-testid="button-apply-coupon"
                                   >
