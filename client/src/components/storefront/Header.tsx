@@ -78,10 +78,12 @@ export function Header({
   onSearch,
   onSearchSubmit,
   collapsibleMobileSearch,
+  onLogoClick,
 }: {
   onSearch?: (query: string) => void;
   onSearchSubmit?: (query: string) => void;
   collapsibleMobileSearch?: boolean;
+  onLogoClick?: () => void;
 }) {
   const { totalItems, setIsCartOpen } = useCart();
   const { customer } = useCustomer();
@@ -150,9 +152,15 @@ export function Header({
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2">
         {/* Left: Logo */}
         <div className="flex items-center shrink-0">
-          <Link href="/" className="flex items-center group">
-            <FishTokriLogo className="h-8 sm:h-11 w-auto" />
-          </Link>
+          {onLogoClick ? (
+            <button onClick={onLogoClick} className="flex items-center group focus:outline-none">
+              <FishTokriLogo className="h-8 sm:h-11 w-auto" />
+            </button>
+          ) : (
+            <Link href="/" className="flex items-center group">
+              <FishTokriLogo className="h-8 sm:h-11 w-auto" />
+            </Link>
+          )}
         </div>
 
         {/* Center: Search bar — desktop only */}

@@ -14,6 +14,7 @@ import CategoryPage from "@/pages/storefront/CategoryPage";
 import RecipeDetail from "@/pages/storefront/RecipeDetail";
 import Profile from "@/pages/storefront/Profile";
 import ComboDetail from "@/pages/storefront/ComboDetail";
+import CombosPage from "@/pages/storefront/CombosPage";
 import AddAddress from "@/pages/storefront/AddAddress";
 import Login from "@/pages/admin/Login";
 import Dashboard from "@/pages/admin/Dashboard";
@@ -39,6 +40,7 @@ function Router() {
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/recipe/product/:productId/:recipeIndex" component={RecipeDetail} />
       <Route path="/recipe/:category/:index" component={RecipeDetail} />
+      <Route path="/combos" component={CombosPage} />
       <Route path="/combo/:id" component={ComboDetail} />
       <Route path="/add-address" component={AddAddress} />
       <Route path="/admin/login" component={Login} />

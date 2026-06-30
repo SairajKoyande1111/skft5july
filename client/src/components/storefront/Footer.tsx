@@ -1,3 +1,4 @@
+import { Link } from "wouter";
 import { FishTokriLogo } from "@/components/storefront/FishTokriLogo";
 
 import instaIcon from "@assets/instagram_(5)_1778180430452.png";
@@ -57,12 +58,12 @@ export function Footer() {
                 { label: "Shop Prawns", href: "/category/Prawns" },
                 { label: "Shop Chicken", href: "/category/Chicken" },
                 { label: "Shop Mutton", href: "/category/Mutton" },
-                { label: "Combo Deals", href: "/category/Combo" },
+                { label: "Combo Deals", href: "/combos" },
               ].map(({ label, href }) => (
                 <li key={label}>
-                  <a href={href} className="text-white text-sm hover:opacity-75 transition-opacity">
+                  <Link href={href} className="text-white text-sm hover:opacity-75 transition-opacity">
                     {label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
