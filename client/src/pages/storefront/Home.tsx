@@ -20,6 +20,14 @@ function getFallbackImage(_category: string): string {
   return noImageImg;
 }
 
+function optimizeCloudinaryUrl(url: string, size = 200): string {
+  if (!url || !url.includes("res.cloudinary.com")) return url;
+  return url.replace(
+    /\/upload\//,
+    `/upload/w_${size},h_${size},c_fill,f_auto,q_auto:good/`
+  );
+}
+
 import welcomeAudio from "@assets/ElevenLabs_2026-03-05T15_00_59_Bella_-_Professional,_Bright,_W_1772722955169.mp3";
 
 function ComboImages({ images }: { images: string[] }) {
@@ -304,7 +312,7 @@ export default function Home() {
             ref={catScrollRef}
             className="flex overflow-x-auto gap-6 scrollbar-hide snap-x snap-mandatory"
           >
-            {categories.map((cat) => (
+            {categories.map((cat, idx) => (
               <button
                 key={cat.name}
                 onClick={() => handleCategoryClick(cat.name)}
@@ -314,10 +322,13 @@ export default function Home() {
                 <div className="w-28 h-28 sm:w-32 sm:h-32 overflow-hidden transition-all duration-300 group-hover:scale-105">
                   {cat.imageUrl ? (
                     <img
-                      src={cat.imageUrl}
+                      src={optimizeCloudinaryUrl(cat.imageUrl, 200)}
                       alt={cat.name}
-                      loading="lazy"
-                      decoding="async"
+                      width={128}
+                      height={128}
+                      loading={idx < 5 ? "eager" : "lazy"}
+                      fetchpriority={idx < 5 ? "high" : "auto"}
+                      decoding={idx < 5 ? "sync" : "async"}
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   ) : (
