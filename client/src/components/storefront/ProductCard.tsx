@@ -103,14 +103,14 @@ export function ProductCard({ product }: { product: Product }) {
               <span className="text-muted-foreground/50">|</span>
             </>
           )}
-          {piecesText && (
+          {product.netWeight && (
             <>
-              <span className="font-medium text-foreground/80 whitespace-nowrap">{piecesText}</span>
-              {product.netWeight && <span className="text-muted-foreground/50">|</span>}
+              <span className="font-medium text-foreground/80 whitespace-nowrap">{product.netWeight} gm net</span>
+              {piecesText && <span className="text-muted-foreground/50">|</span>}
             </>
           )}
-          {product.netWeight && (
-            <span className="font-medium text-foreground/80 whitespace-nowrap">{product.netWeight} gm net</span>
+          {piecesText && (
+            <span className="font-medium text-foreground/80 whitespace-nowrap">{piecesText}</span>
           )}
         </div>
 
