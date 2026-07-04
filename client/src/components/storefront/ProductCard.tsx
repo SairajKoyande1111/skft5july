@@ -96,25 +96,23 @@ export function ProductCard({ product }: { product: Product }) {
           {product.name}
         </h3>
 
-        <p className="text-sm text-muted-foreground mb-2.5 font-normal">
+        <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-sm text-muted-foreground mb-2.5 font-normal">
           {product.grossWeight && (
             <>
-              <span className="font-medium text-foreground/80">{product.grossWeight}gm gross</span>
-              <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+              <span className="font-medium text-foreground/80 whitespace-nowrap">{product.grossWeight}gm gross</span>
+              <span className="text-muted-foreground/50">|</span>
             </>
           )}
           {piecesText && (
             <>
-              <span className="font-medium text-foreground/80">{piecesText}</span>
-              {product.netWeight && <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>}
+              <span className="font-medium text-foreground/80 whitespace-nowrap">{piecesText}</span>
+              {product.netWeight && <span className="text-muted-foreground/50">|</span>}
             </>
           )}
           {product.netWeight && (
-            <>
-              <span className="font-medium text-foreground/80">{product.netWeight}gm net</span>
-            </>
+            <span className="font-medium text-foreground/80 whitespace-nowrap">{product.netWeight}gm net</span>
           )}
-        </p>
+        </div>
 
         <div className="flex items-center justify-between mt-auto pt-1">
           <div className="flex items-center gap-2 flex-wrap">
