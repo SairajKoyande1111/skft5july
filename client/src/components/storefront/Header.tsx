@@ -79,18 +79,20 @@ export function Header({
   onSearchSubmit,
   collapsibleMobileSearch,
   onLogoClick,
+  initialSearchValue,
 }: {
   onSearch?: (query: string) => void;
   onSearchSubmit?: (query: string) => void;
   collapsibleMobileSearch?: boolean;
   onLogoClick?: () => void;
+  initialSearchValue?: string;
 }) {
   const { totalItems, setIsCartOpen } = useCart();
   const { customer } = useCustomer();
   const { selectedSubHub, selectedSuperHub, openPicker } = useHub();
   const [, navigate] = useLocation();
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState(initialSearchValue ?? "");
   const [searchFocused, setSearchFocused] = useState(false);
   const [otpModalOpen, setOtpModalOpen] = useState(false);
   const [isListening, setIsListening] = useState(false);

@@ -146,7 +146,7 @@ export default function Home() {
     return (
       <div className="min-h-screen bg-white flex flex-col font-sans">
         <audio ref={audioRef} src={welcomeAudio} />
-        <Header onSearch={(q) => { setSearchQuery(q); if (!q) setView("home"); }} onLogoClick={handleLogoClick} />
+        <Header onSearch={(q) => { setSearchQuery(q); if (!q) setView("home"); }} onLogoClick={handleLogoClick} initialSearchValue={searchQuery} />
         <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div className="flex items-center gap-4">
@@ -271,7 +271,7 @@ export default function Home() {
       <Header onSearch={(q) => {
         setSearchQuery(q);
         if (q) setView("category");
-      }} onLogoClick={handleLogoClickHome} />
+      }} onLogoClick={handleLogoClickHome} initialSearchValue={searchQuery} />
 
       <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-5">
         {/* Banner Carousel */}

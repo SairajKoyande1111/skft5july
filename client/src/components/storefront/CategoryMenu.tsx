@@ -74,6 +74,10 @@ export function CategoryMenuDropdown({ open, onClose }: Props) {
   };
 
   const handleCategoryClick = (catName: string) => {
+    setActiveCategory(catName);
+  };
+
+  const handleViewAll = (catName: string) => {
     onClose();
     navigate(`/category/${encodeURIComponent(catName)}`);
   };
@@ -142,6 +146,14 @@ export function CategoryMenuDropdown({ open, onClose }: Props) {
           className="flex-1 bg-white sm:bg-slate-50/50 p-4 sm:px-6 sm:py-4 overflow-y-auto [&::-webkit-scrollbar]:hidden"
           style={{ maxHeight: "75vh", scrollbarWidth: "none" }}
         >
+          {/* View All link for selected category */}
+          <button
+            onClick={() => handleViewAll(activeCategoryName)}
+            className="w-full text-left text-xs font-semibold text-accent hover:underline mb-3 flex items-center gap-1"
+          >
+            View all in {activeCategoryName} →
+          </button>
+
           {activeProducts.length === 0 ? (
             <p className="text-sm text-muted-foreground py-4">No products available.</p>
           ) : (
