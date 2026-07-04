@@ -49,7 +49,7 @@ export function setupAuth(app: Express) {
   }
 
   const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || "fish_tokri_secret",
+    secret: process.env.SESSION_SECRET!,
     resave: false,
     saveUninitialized: false,
     rolling: true, // Refresh cookie expiry on every request
