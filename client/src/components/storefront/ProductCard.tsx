@@ -99,7 +99,7 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-sm text-muted-foreground mb-2.5 font-normal">
           {product.grossWeight && (
             <>
-              <span className="font-medium text-foreground/80 whitespace-nowrap">{product.grossWeight.trim()} gm gross</span>
+              <span className="font-medium text-foreground/80 whitespace-nowrap">{String(product.grossWeight).trim()} gm gross</span>
               <span className="text-muted-foreground/50">|</span>
             </>
           )}
